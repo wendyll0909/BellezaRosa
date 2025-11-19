@@ -47,4 +47,6 @@ Route::middleware(['auth'])->group(function () {
         Route::patch('users/{user}/role', [UserManagementController::class, 'updateRole'])->name('users.role');
         Route::patch('users/{user}/toggle-active', [UserManagementController::class, 'toggleActive'])->name('users.toggle');
     });
+    // AJAX route for dashboard filtering
+        Route::post('/dashboard/filter', [DashboardController::class, 'filter'])->name('dashboard.filter');
 });

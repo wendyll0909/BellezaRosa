@@ -6,8 +6,8 @@
 <div class="space-y-6">
     <!-- Header -->
     <div class="flex justify-between items-center">
-        <h1 class="text-3xl font-bold text-gray-900">Services</h1>
-        <button class="bg-yellow-500 hover:bg-yellow-400 text-blue-900 font-bold py-3 px-6 rounded-xl shadow-lg transform hover:-translate-y-1 transition">
+        <h1 class="text-3xl font-bold text-gray-900">Services Management</h1>
+        <button onclick="openAddServiceModal()" class="bg-yellow-500 hover:bg-yellow-400 text-blue-900 font-bold py-3 px-6 rounded-xl shadow-lg transform hover:-translate-y-1 transition">
             <i class="fas fa-plus mr-2"></i> Add Service
         </button>
     </div>
@@ -46,6 +46,7 @@
                 </div>
             </div>
 
+            @if(auth()->user()->isAdmin())
             <div class="flex space-x-2 pt-4 border-t border-gray-200">
                 <button class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition text-sm font-semibold">
                     <i class="fas fa-edit mr-1"></i> Edit
@@ -58,6 +59,7 @@
                     </button>
                 </form>
             </div>
+            @endif
         </div>
         @empty
         <div class="col-span-full">
@@ -115,7 +117,7 @@
                         <input type="number" step="0.01" name="price_premium" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none" placeholder="0.00">
                     </div>
                     <div class="form-group flex items-center">
-                        <input type="checkbox" name="is_premium" id="is_premium" class="mr-2">
+                        <input type="checkbox" name="is_premium" id="is_premium" class="mr-2 rounded">
                         <label for="is_premium" class="text-gray-700 font-semibold">Premium Service</label>
                     </div>
                 </div>

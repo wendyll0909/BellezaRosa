@@ -52,6 +52,18 @@
             transform: translateY(-5px);
             box-shadow: 0 12px 30px rgba(0,0,0,0.12);
         }
+        .cursor-pointer {
+    cursor: pointer;
+}
+
+.cursor-pointer:hover {
+    transform: translateY(-2px);
+    transition: transform 0.2s ease;
+}
+
+.hidden {
+    display: none;
+}
     </style>
 </head>
 <body class="bg-gray-50">

@@ -7,7 +7,7 @@
     <!-- Header -->
     <div class="flex justify-between items-center">
         <h1 class="text-3xl font-bold text-gray-900">User Management</h1>
-        <button class="bg-yellow-500 hover:bg-yellow-400 text-blue-900 font-bold py-3 px-6 rounded-xl shadow-lg transform hover:-translate-y-1 transition">
+        <button onclick="openAddUserModal()" class="bg-yellow-500 hover:bg-yellow-400 text-blue-900 font-bold py-3 px-6 rounded-xl shadow-lg transform hover:-translate-y-1 transition">
             <i class="fas fa-user-plus mr-2"></i> Add User
         </button>
     </div>
