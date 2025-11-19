@@ -3,24 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Belleza Rosa - Dashboard</title>
+    <title>@yield('title', 'Dashboard - Belleza Rosa')</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #1E40AF; --gold: #F59E0B; --light: #F8FAFC; }
-        .sidebar { width: 260px; background: var(--primary); color: white; position: fixed; height: 100%; overflow-y: auto; }
-        .nav-item { padding: 16px 30px; display: flex; align-items: center; cursor: pointer; }
-        .nav-item:hover, .nav-item.active { background: #1E3A8A; }
-        .nav-item.active { border-left: 5px solid var(--gold); background: #3B82F6; font-weight: 600; }
-        .main-content { margin-left: 260px; padding: 25px; }
+        :root { 
+            --primary: #1E40AF; 
+            --gold: #F59E0B; 
+            --light: #F8FAFC; 
+        }
+        .sidebar { 
+            width: 260px; 
+            background: var(--primary); 
+            color: white; 
+            position: fixed; 
+            height: 100%; 
+            overflow-y: auto; 
+        }
+        .nav-item { 
+            padding: 16px 30px; 
+            display: flex; 
+            align-items: center; 
+            cursor: pointer; 
+            transition: all 0.3s ease;
+        }
+        .nav-item:hover, .nav-item.active { 
+            background: #1E3A8A; 
+        }
+        .nav-item.active { 
+            border-left: 5px solid var(--gold); 
+            background: #3B82F6; 
+            font-weight: 600; 
+        }
+        .main-content { 
+            margin-left: 260px; 
+            padding: 25px; 
+            min-height: 100vh;
+            background: #F8FAFC;
+        }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+            transition: 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+        }
     </style>
 </head>
-<body class="bg-light">
+<body class="bg-gray-50">
     <!-- Sidebar -->
     <aside class="sidebar">
         <div class="p-6 text-center border-b border-white border-opacity-20">
-            <h1 class="text-2xl font-bold"><i class="fas fa-spa text-gold mr-2"></i> Belleza Rosa</h1>
+            <h1 class="text-2xl font-bold flex items-center justify-center">
+                <i class="fas fa-spa text-yellow-500 mr-2"></i> Belleza Rosa
+            </h1>
+            <p class="text-sm opacity-75 mt-2">Welcome, {{ auth()->user()->full_name }}</p>
         </div>
         <nav class="mt-6">
             <div class="nav-item {{ request()->is('dashboard') ? 'active' : '' }}" onclick="location.href='{{ route('dashboard.index') }}'">
@@ -29,8 +70,11 @@
             <div class="nav-item {{ request()->is('dashboard/appointments*') ? 'active' : '' }}" onclick="location.href='{{ route('dashboard.appointments.index') }}'">
                 <i class="fas fa-calendar-check mr-3"></i> Appointments
             </div>
+            <div class="nav-item {{ request()->is('dashboard/services*') ? 'active' : '' }}" onclick="location.href='{{ route('dashboard.services.index') }}'">
+                <i class="fas fa-spa mr-3"></i> Services
+            </div>
             @if(auth()->user()->isAdmin())
-                <div class="nav-item" onclick="location.href='{{ route('dashboard.users.index') }}'">
+                <div class="nav-item {{ request()->is('dashboard/users*') ? 'active' : '' }}" onclick="location.href='{{ route('dashboard.users.index') }}'">
                     <i class="fas fa-users-cog mr-3"></i> Manage Users
                 </div>
             @endif
@@ -42,9 +86,11 @@
 
     <!-- Main Content -->
     <main class="main-content">
-        {{ $slot }}
+        @yield('content')
     </main>
 
-    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">@csrf</form>
+    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+        @csrf
+    </form>
 </body>
 </html>

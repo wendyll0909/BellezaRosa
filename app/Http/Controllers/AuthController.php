@@ -7,18 +7,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
-use Inertia\Inertia;
 
 class AuthController extends Controller
 {
     public function showLogin()
     {
-        return view('auth.login');
+        return view('auth.login-custom'); // Fixed: Use correct view name
     }
 
     public function showRegister()
     {
-        return view('auth.register');
+        return view('auth.register-custom'); // Fixed: Use correct view name
     }
 
     public function login(Request $request)
@@ -28,9 +27,9 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        if (Auth::attempt($credentials)) {
+        // Try to authenticate with username
+        if (Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
             $request->session()->regenerate();
-
             $user = Auth::user();
 
             if ($user->role === 'admin' || $user->role === 'staff') {
@@ -51,6 +50,7 @@ class AuthController extends Controller
             'full_name' => 'required|string|max:100',
             'username'  => 'required|string|max:50|unique:users',
             'phone'     => 'required|string|max:20|unique:users',
+            'email'     => 'nullable|email|unique:users',
             'password'  => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -58,6 +58,7 @@ class AuthController extends Controller
             'full_name' => $request->full_name,
             'username'  => $request->username,
             'phone'     => $request->phone,
+            'email'     => $request->email,
             'password'  => Hash::make($request->password),
             'role'      => 'customer', // default
         ]);

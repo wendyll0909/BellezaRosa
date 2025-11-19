@@ -56,10 +56,8 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
-        // ← YOUR ROLE MIDDLEWARE ADDED HERE
-            'role' => \App\Http\Middleware\CheckRole::class,
-
-        'role' => \App\Http\Middleware\RoleMiddleware::class,
+        // FIXED: Use only one role middleware - remove duplicates
+        'role' => \App\Http\Middleware\CheckRole::class,
+        // Remove this line: 'role' => \App\Http\Middleware\RoleMiddleware::class,
     ];
-    
 }

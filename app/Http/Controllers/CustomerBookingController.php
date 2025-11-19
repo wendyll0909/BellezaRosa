@@ -8,6 +8,7 @@ use App\Models\Service;
 use App\Models\Staff;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class CustomerBookingController extends Controller
 {
@@ -51,6 +52,7 @@ class CustomerBookingController extends Controller
                 'staff_id'       => $request->staff_id,
                 'service_id'     => $service->id,
                 'start_datetime' => $start,
+                'end_datetime'   => Carbon::parse($start)->addMinutes($service->duration_minutes),
                 'status'         => 'scheduled',
                 'total_amount'   => $price,
                 'is_walk_in'     => false,

@@ -32,5 +32,33 @@
                 {{ $slot }}
             </main>
         </div>
+
+        <!-- Toast Notification -->
+        <div id="toast" class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 hidden transition-all duration-300">
+            <div class="flex items-center">
+                <i class="fas fa-check-circle mr-2"></i>
+                <span id="toast-message"></span>
+            </div>
+        </div>
+
+        <script>
+            // Toast notification function
+            function showToast(message) {
+                const toast = document.getElementById('toast');
+                const toastMessage = document.getElementById('toast-message');
+                
+                toastMessage.textContent = message;
+                toast.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    toast.classList.add('hidden');
+                }, 3000);
+            }
+
+            // Listen for toast events
+            window.addEventListener('toast', (event) => {
+                showToast(event.detail.message);
+            });
+        </script>
     </body>
 </html>

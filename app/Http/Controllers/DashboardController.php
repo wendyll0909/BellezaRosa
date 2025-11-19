@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Appointment;
 use App\Models\User;
 use App\Models\Service;
+use App\Models\Customer;
+use App\Models\Staff;
 
 class DashboardController extends Controller
 {
@@ -19,7 +21,7 @@ class DashboardController extends Controller
         // Get dashboard statistics
         $stats = [
             'today_appointments' => Appointment::whereDate('start_datetime', today())->count(),
-            'total_customers' => User::where('role', 'customer')->count(),
+            'total_customers' => Customer::count(),
             'total_staff' => User::where('role', 'staff')->count(),
             'revenue_today' => Appointment::whereDate('start_datetime', today())
                 ->where('status', 'completed')
@@ -40,6 +42,11 @@ class DashboardController extends Controller
             ->limit(10)
             ->get();
 
-        return view('dashboard.index', compact('stats', 'todayAppointments', 'upcomingAppointments'));
+        // Get data for modals
+        $customers = Customer::all();
+        $services = Service::where('is_active', true)->get();
+        $staff = Staff::with('user')->get();
+
+        return view('dashboard.index', compact('stats', 'todayAppointments', 'upcomingAppointments', 'customers', 'services', 'staff'));
     }
 }
