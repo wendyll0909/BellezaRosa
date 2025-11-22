@@ -50,3 +50,6 @@ Route::middleware(['auth'])->group(function () {
     // AJAX route for dashboard filtering
         Route::post('/dashboard/filter', [DashboardController::class, 'filter'])->name('dashboard.filter');
 });
+Route::get('/appointments', [AppointmentController::class, 'index'])->name('dashboard.appointments.index');
+Route::get('/staff', [StaffController::class, 'index'])->name('dashboard.staff.index');
+Route::get('/reports/financial', [ReportController::class, 'financial'])->name('dashboard.reports.financial');

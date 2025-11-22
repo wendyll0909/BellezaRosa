@@ -206,18 +206,19 @@ public function filter(Request $request)
 
 private function getCustomerServicesData($startDate, $endDate)
 {
-    $customersWithServices = Customer::with(['appointments.service' => function($query) use ($startDate, $endDate) {
-        $query->whereBetween('start_datetime', [$startDate, $endDate]);
-    }])
-    ->whereHas('appointments', function($query) use ($startDate, $endDate) {
-        $query->whereBetween('start_datetime', [$startDate, $endDate]);
-    })
-    ->withCount(['appointments as range_appointments_count' => function($query) use ($startDate, $endDate) {
-        $query->whereBetween('start_datetime', [$startDate, $endDate]);
-    }])
-    ->orderBy('range_appointments_count', 'desc')
-    ->limit(10)
-    ->get();
+    $customersWithServices = Customer::with(['appointments' => function ($query) use ($startDate, $endDate) {
+    $query->whereBetween('start_datetime', [$startDate, $endDate])
+          ->with('service'); // eager load service only for appointments in range
+}])
+->whereHas('appointments', function($query) use ($startDate, $endDate) {
+    $query->whereBetween('start_datetime', [$startDate, $endDate]);
+})
+->withCount(['appointments as range_appointments_count' => function($query) use ($startDate, $endDate) {
+    $query->whereBetween('start_datetime', [$startDate, $endDate]);
+}])
+->orderBy('range_appointments_count', 'desc')
+->limit(10)
+->get();
 
     $totalServices = Appointment::whereBetween('start_datetime', [$startDate, $endDate])->count();
     

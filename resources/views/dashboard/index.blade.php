@@ -1,3 +1,4 @@
+
 @extends('layouts.dashboard')
 
 @section('title', 'Dashboard - Belleza Rosa')
@@ -7,72 +8,100 @@
     <!-- Header with Date Filter -->
     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <h1 class="text-3xl font-bold text-gray-900">Dashboard Overview</h1>
-        <div class="flex flex-col sm:flex-row gap-3">
-            <select id="dateFilter" class="px-4 py-2 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none">
-                <option value="today" {{ ($currentFilter ?? 'today') == 'today' ? 'selected' : '' }}>Today</option>
-                <option value="this_week" {{ ($currentFilter ?? '') == 'this_week' ? 'selected' : '' }}>This Week</option>
-                <option value="this_month" {{ ($currentFilter ?? '') == 'this_month' ? 'selected' : '' }}>This Month</option>
-                <option value="custom" {{ ($currentFilter ?? '') == 'custom' ? 'selected' : '' }}>Custom Range</option>
-            </select>
-            <div id="customDateRange" class="hidden sm:flex gap-2">
-                <input type="month" id="customMonth" value="{{ $currentCustomDate ?? '' }}" class="px-4 py-2 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none">
-                <button onclick="applyCustomDate()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl transition">Apply</button>
-            </div>
-        </div>
+        <div class="flex flex-col sm:flex-row gap-3 items-end">
+    <div class="flex-1">
+        <select id="dateFilter" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none">
+            <option value="today">Today</option>
+            <option value="this_week">This Week</option>
+            <option value="this_month">This Month</option>
+            <option value="custom">Custom Range</option>
+        </select>
+    </div>
+
+    <!-- Custom Month Picker (hidden by default) -->
+    <div id="customDateRange" class="hidden gap-2">
+        <input type="month" id="customMonth" class="px-4 py-2 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none">
+    </div>
+
+    <!-- Apply Button (always visible) -->
+    <button id="applyFilterBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl transition font-medium whitespace-nowrap">
+        Apply Filter
+    </button>
+</div>
     </div>
 
     <!-- Statistics Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="card border-l-4 border-blue-500">
-            <div class="flex items-center">
-                <div class="p-3 bg-blue-100 rounded-xl">
+        <!-- Appointments -->
+        <div class="card border-l-4 border-blue-500 cursor-pointer hover:shadow-md transition-shadow" onclick="viewAppointments()">
+            <div class="flex">
+                <div class="p-3 bg-blue-100 rounded-xl h-fit">
                     <i class="fas fa-calendar-day text-blue-600 text-xl"></i>
                 </div>
-                <div class="ml-4">
-                    <h3 class="text-sm font-medium text-gray-500" id="appointmentsLabel">{{ $stats_label ?? "Today's" }} Appointments</h3>
-                    <p class="text-2xl font-bold text-gray-900" id="appointmentsCount">{{ $appointments_count ?? 0 }}</p>
+                <div class="ml-4 flex-1 flex flex-col justify-between">
+                    <h3 class="text-sm font-medium text-gray-500" id="appointmentsLabel">
+                        {{ $stats_label ?? "Today's" }} Appointments
+                    </h3>
+                    <p class="text-2xl font-bold text-gray-900 text-right" id="appointmentsCount">
+                        {{ $appointments_count ?? 0 }}
+                    </p>
                 </div>
             </div>
         </div>
 
-        <div class="card border-l-4 border-green-500 cursor-pointer" onclick="viewCustomerServices()">
-    <div class="flex items-center">
-        <div class="p-3 bg-green-100 rounded-xl">
-            <i class="fas fa-users text-green-600 text-xl"></i>
+        <!-- Customers -->
+        <div class="card border-l-4 border-green-500 cursor-pointer hover:shadow-md transition-shadow" onclick="viewCustomerServices()">
+            <div class="flex">
+                <div class="p-3 bg-green-100 rounded-xl h-fit">
+                    <i class="fas fa-users text-green-600 text-xl"></i>
+                </div>
+                <div class="ml-4 flex-1 flex flex-col justify-between">
+                    <h3 class="text-sm font-medium text-gray-500" id="customersLabel">
+                        {{ $stats_label ?? "Today's" }} Total Customers
+                    </h3>
+                    <p class="text-2xl font-bold text-gray-900 text-right" id="totalCustomers">
+                        {{ $total_customers ?? 0 }}
+                    </p>
+                </div>
+            </div>
         </div>
-        <div class="ml-4">
-            <h3 class="text-sm font-medium text-gray-500" id="customersLabel">
-                {{ $stats_label ?? "Today's" }} Total Customers
-            </h3>
-            <p class="text-2xl font-bold text-gray-900" id="totalCustomers">{{ $total_customers ?? 0 }}</p>
-        </div>
-    </div>
-</div>
 
-        <div class="card border-l-4 border-purple-500">
-            <div class="flex items-center">
-                <div class="p-3 bg-purple-100 rounded-xl">
+        <!-- Staff -->
+        <div class="card border-l-4 border-purple-500 cursor-pointer hover:shadow-md transition-shadow" onclick="viewStaff()">
+            <div class="flex">
+                <div class="p-3 bg-purple-100 rounded-xl h-fit">
                     <i class="fas fa-user-tie text-purple-600 text-xl"></i>
                 </div>
-                <div class="ml-4">
+                <div class="ml-4 flex-1 flex flex-col justify-between">
                     <h3 class="text-sm font-medium text-gray-500">Staff Members</h3>
-                    <p class="text-2xl font-bold text-gray-900" id="totalStaff">{{ $total_staff ?? 0 }}</p>
+                    <p class="text-2xl font-bold text-gray-900 text-right" id="totalStaff">
+                        {{ $total_staff ?? 0 }}
+                    </p>
                 </div>
             </div>
         </div>
 
-        <div class="card border-l-4 border-yellow-500">
-            <div class="flex items-center">
-                <div class="p-3 bg-yellow-100 rounded-xl">
+        <!-- Revenue -->
+        <div class="card border-l-4 border-yellow-500 cursor-pointer hover:shadow-md transition-shadow" onclick="viewRevenue()">
+            <div class="flex">
+                <div class="p-3 bg-yellow-100 rounded-xl h-fit">
                     <i class="fas fa-money-bill-wave text-yellow-600 text-xl"></i>
                 </div>
-                <div class="ml-4">
-                    <h3 class="text-sm font-medium text-gray-500" id="revenueLabel">{{ $stats_label ?? "Today's" }} Revenue</h3>
-                    <p class="text-2xl font-bold text-gray-900" id="revenueAmount">₱{{ number_format($revenue ?? 0, 2) }}</p>
+                <div class="ml-4 flex-1 flex flex-col justify-between">
+                    <h3 class="text-sm font-medium text-gray-500" id="revenueLabel">
+                        {{ $stats_label ?? "Today's" }} Revenue
+                    </h3>
+                    <p class="text-2xl font-bold text-gray-900 text-right" id="revenueAmount">
+                        ₱{{ number_format($revenue ?? 0, 2) }}
+                    </p>
                 </div>
             </div>
         </div>
     </div>
+
+</div>
+
+
 
     <!-- Quick Actions & Appointments -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -92,16 +121,49 @@
         </div>
 
         <!-- Range Appointments -->
-        <div class="card">
-            <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                <i class="fas fa-clock text-blue-500 mr-2"></i> 
-                <span id="appointmentsSectionLabel">{{ $stats_label ?? "Today's" }} Appointments</span>
-            </h3>
-            <div id="appointmentsList">
-                @if(isset($rangeAppointments) && $rangeAppointments->count() > 0)
-                    <div class="space-y-3">
-                        @foreach($rangeAppointments->take(5) as $appointment)
-                        <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
+<div class="card">
+    <div class="flex items-center justify-between mb-4">
+        <h3 class="text-xl font-bold text-gray-900 flex items-center">
+            <i class="fas fa-clock text-blue-500 mr-2"></i> 
+            <span id="appointmentsSectionLabel">{{ $stats_label ?? "Today's" }} Appointments</span>
+        </h3>
+        <button id="toggleAppointmentsBtn" 
+                class="text-sm text-blue-600 hover:text-blue-800 font-medium hidden">
+            See All <i class="fas fa-chevron-down ml-1"></i>
+        </button>
+    </div>
+
+    <div id="appointmentsList">
+        @if(isset($rangeAppointments) && $rangeAppointments->count() > 0)
+            <div class="space-y-3" id="appointmentsContainer">
+                @foreach($rangeAppointments->take(2) as $appointment)
+                    <div class="appointment-item flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
+                        <div class="flex items-center space-x-3">
+                            <div class="text-center bg-blue-100 rounded-lg p-2 min-w-16">
+                                <div class="font-bold text-blue-700">{{ $appointment->start_datetime->format('h:i') }}</div>
+                                <div class="text-xs text-blue-600">{{ $appointment->start_datetime->format('A') }}</div>
+                            </div>
+                            <div>
+                                <div class="font-medium text-gray-900">{{ $appointment->customer->full_name }}</div>
+                                <div class="text-sm text-gray-500">{{ $appointment->service->name }}</div>
+                            </div>
+                        </div>
+                        <span class="text-xs font-medium 
+    {{ $appointment->status == 'scheduled' ? 'text-blue-700' : '' }}
+    {{ $appointment->status == 'confirmed' ? 'text-green-700' : '' }}
+    {{ $appointment->status == 'in_progress' ? 'text-yellow-700' : '' }}
+    {{ $appointment->status == 'completed' ? 'text-gray-600' : '' }}
+    {{ $appointment->status == 'cancelled' ? 'text-red-700' : '' }}
+    {{ $appointment->status == 'no_show' ? 'text-gray-500' : '' }}">
+    {{ str_replace('_', ' ', ucfirst($appointment->status)) }}
+</span>
+                    </div>
+                @endforeach
+
+                <!-- Hidden items (will be shown on "See All") -->
+                @if($rangeAppointments->count() > 2)
+                    @foreach($rangeAppointments->skip(2) as $appointment)
+                        <div class="appointment-item hidden flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
                             <div class="flex items-center space-x-3">
                                 <div class="text-center bg-blue-100 rounded-lg p-2 min-w-16">
                                     <div class="font-bold text-blue-700">{{ $appointment->start_datetime->format('h:i') }}</div>
@@ -112,21 +174,31 @@
                                     <div class="text-sm text-gray-500">{{ $appointment->service->name }}</div>
                                 </div>
                             </div>
-                            <span class="px-2 py-1 text-xs rounded-full 
-                                {{ $appointment->status == 'scheduled' ? 'bg-blue-100 text-blue-800' : '' }}
-                                {{ $appointment->status == 'confirmed' ? 'bg-green-100 text-green-800' : '' }}
-                                {{ $appointment->status == 'in_progress' ? 'bg-yellow-100 text-yellow-800' : '' }}
-                                {{ $appointment->status == 'completed' ? 'bg-gray-100 text-gray-800' : '' }}">
-                                {{ str_replace('_', ' ', ucfirst($appointment->status)) }}
-                            </span>
+                            <span class="text-xs font-medium
+    {{ $appointment->status == 'scheduled' ? 'text-blue-700' : '' }}
+    {{ $appointment->status == 'confirmed' ? 'text-green-700' : '' }}
+    {{ $appointment->status == 'in_progress' ? 'text-yellow-700' : '' }}
+    {{ $appointment->status == 'completed' ? 'text-gray-600' : '' }}
+    {{ $appointment->status == 'cancelled' ? 'text-red-700' : '' }}
+    {{ $appointment->status == 'no_show' ? 'text-gray-500' : '' }}">
+    {{ str_replace('_', ' ', ucfirst($appointment->status)) }}
+</span>
                         </div>
-                        @endforeach
-                    </div>
-                @else
-                    <p class="text-gray-500 text-center py-4">No appointments for selected period.</p>
+                    @endforeach
                 @endif
             </div>
-        </div>
+
+            <!-- Show "See All" button only if more than 2 -->
+            @if($rangeAppointments->count() > 2)
+                <script>
+                    document.getElementById('toggleAppointmentsBtn').classList.remove('hidden');
+                </script>
+            @endif
+        @else
+            <p class="text-gray-500 text-center py-4">No appointments for selected period.</p>
+        @endif
+    </div>
+</div>
     </div>
 
     <!-- Upcoming Appointments -->
@@ -163,14 +235,15 @@
                                     {{ $appointment->staff->user->full_name ?? 'Unassigned' }}
                                 </td>
                                 <td class="px-4 py-3">
-                                    <span class="px-2 py-1 text-xs rounded-full 
-                                        {{ $appointment->status == 'scheduled' ? 'bg-blue-100 text-blue-800' : '' }}
-                                        {{ $appointment->status == 'confirmed' ? 'bg-green-100 text-green-800' : '' }}
-                                        {{ $appointment->status == 'in_progress' ? 'bg-yellow-100 text-yellow-800' : '' }}
-                                        {{ $appointment->status == 'completed' ? 'bg-gray-100 text-gray-800' : '' }}">
-                                        {{ str_replace('_', ' ', ucfirst($appointment->status)) }}
-                                    </span>
-                                </td>
+    <span class="px-2 py-1 text-xs rounded-full
+        {{ $appointment->status == 'scheduled' ? 'text-blue-600' : '' }}
+        {{ $appointment->status == 'confirmed' ? 'text-green-600' : '' }}
+        {{ $appointment->status == 'in_progress' ? 'text-yellow-600' : '' }}
+        {{ $appointment->status == 'completed' ? 'text-gray-600' : '' }}">
+        {{ str_replace('_', ' ', ucfirst($appointment->status)) }}
+    </span>
+</td>
+
                             </tr>
                             @endforeach
                         </tbody>
@@ -189,13 +262,27 @@
 
 <script>
 // Date Filter Functionality
+document.getElementById('applyFilterBtn').addEventListener('click', function() {
+    const filter = document.getElementById('dateFilter').value;
+    const customRange = document.getElementById('customDateRange');
+    
+    if (filter === 'custom') {
+        if (customRange.classList.contains('hidden')) {
+            showToast('Please select a month first', 'error');
+            return;
+        }
+        applyCustomDate();
+    } else {
+        applyDateFilter(filter);
+    }
+});
+
 document.getElementById('dateFilter').addEventListener('change', function() {
     const customRange = document.getElementById('customDateRange');
     if (this.value === 'custom') {
         customRange.classList.remove('hidden');
     } else {
         customRange.classList.add('hidden');
-        applyDateFilter(this.value);
     }
 });
 
@@ -264,15 +351,19 @@ function applyCustomDate() {
 }
 
 function updateDashboard(data) {
-    // Update statistics
+    // Update statistics cards
     document.getElementById('appointmentsLabel').textContent = data.label + ' Appointments';
     document.getElementById('appointmentsCount').textContent = data.stats.appointments_count;
+    
+    document.getElementById('customersLabel').textContent = data.label + ' Total Customers';
+    document.getElementById('totalCustomers').textContent = data.stats.customers_count;
+    
     document.getElementById('revenueLabel').textContent = data.label + ' Revenue';
     document.getElementById('revenueAmount').textContent = '₱' + Number(data.stats.revenue).toLocaleString('en-PH', { minimumFractionDigits: 2 });
-    document.getElementById('totalCustomers').textContent = data.stats.customers_count;
+    
     document.getElementById('totalStaff').textContent = data.stats.total_staff;
     
-    // Store the current filter data for use in customer services modal
+    // Store the current filter data for use in modals
     window.currentFilterData = data;
     
     // Update appointments section label
@@ -280,39 +371,72 @@ function updateDashboard(data) {
     
     // Update appointments list
     const appointmentsList = document.getElementById('appointmentsList');
+    const toggleBtn = document.getElementById('toggleAppointmentsBtn');
+
     if (data.appointments && data.appointments.length > 0) {
-        let appointmentsHtml = '<div class="space-y-3">';
-        data.appointments.slice(0, 5).forEach(appointment => {
+        let appointmentsHtml = '<div class="space-y-3" id="appointmentsContainer">';
+
+        data.appointments.forEach((appointment, index) => {
             const startTime = new Date(appointment.start_datetime);
-            const timeString = startTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-            
+            const time12 = startTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+            const ampm = startTime.getHours() >= 12 ? 'PM' : 'AM';
+
+            const hiddenClass = index >= 2 ? 'hidden' : '';
+
             appointmentsHtml += `
-                <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
+                <div class="appointment-item ${hiddenClass} flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
                     <div class="flex items-center space-x-3">
                         <div class="text-center bg-blue-100 rounded-lg p-2 min-w-16">
-                            <div class="font-bold text-blue-700">${timeString.replace(':00', '')}</div>
-                            <div class="text-xs text-blue-600">${startTime.getHours() >= 12 ? 'PM' : 'AM'}</div>
+                            <div class="font-bold text-blue-700">${time12.replace(':00', '')}</div>
+                            <div class="text-xs text-blue-600">${ampm}</div>
                         </div>
                         <div>
                             <div class="font-medium text-gray-900">${appointment.customer.full_name}</div>
                             <div class="text-sm text-gray-500">${appointment.service.name}</div>
                         </div>
                     </div>
-                    <span class="px-2 py-1 text-xs rounded-full ${getStatusClass(appointment.status)}">
+                   <span class="text-xs font-medium ${getStatusTextClass(appointment.status)}">
                         ${appointment.status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                     </span>
                 </div>
             `;
         });
+
         appointmentsHtml += '</div>';
         appointmentsList.innerHTML = appointmentsHtml;
+
+        // Show/hide "See All" button
+        if (data.appointments.length > 2) {
+            toggleBtn.classList.remove('hidden');
+            toggleBtn.innerHTML = 'See All <i class="fas fa-chevron-down ml-1"></i>';
+        } else {
+            toggleBtn.classList.add('hidden');
+        }
     } else {
         appointmentsList.innerHTML = '<p class="text-gray-500 text-center py-4">No appointments for selected period.</p>';
+        toggleBtn.classList.add('hidden');
     }
-// 🔥 ADD THIS LINE - Update customers label dynamically
-document.getElementById('customersLabel').textContent = data.label + ' Total Customers';    
 }
-// Customer Services Modal Functions
+
+// Card Click Handlers
+function viewAppointments() {
+    // Navigate to appointments page with current filter
+    const filter = document.getElementById('dateFilter').value;
+    let url = '{{ route("dashboard.appointments.index") }}';
+    
+    if (filter !== 'today') {
+        url += `?date_range=${filter}`;
+        if (filter === 'custom') {
+            const month = document.getElementById('customMonth').value;
+            if (month) {
+                url += `&custom_date=${month}`;
+            }
+        }
+    }
+    
+    window.location.href = url;
+}
+
 function viewCustomerServices() {
     // Use the current filter data if available
     if (window.currentFilterData) {
@@ -334,6 +458,30 @@ function viewCustomerServices() {
     document.getElementById('customerServicesModal').classList.remove('hidden');
 }
 
+function viewStaff() {
+    // Navigate to staff management page
+    window.location.href = '{{ route("dashboard.staff.index") }}';
+}
+
+function viewRevenue() {
+    // Navigate to financial reports page with current filter
+    const filter = document.getElementById('dateFilter').value;
+    let url = '{{ route("dashboard.reports.financial") }}';
+    
+    if (filter !== 'today') {
+        url += `?date_range=${filter}`;
+        if (filter === 'custom') {
+            const month = document.getElementById('customMonth').value;
+            if (month) {
+                url += `&custom_date=${month}`;
+            }
+        }
+    }
+    
+    window.location.href = url;
+}
+
+// Customer Services Modal Functions
 function updateCustomerServicesModal(data) {
     const modal = document.getElementById('customerServicesModal');
     const label = data.label || 'Selected Period';
@@ -416,15 +564,16 @@ function updateCustomerServicesModal(data) {
     }
 }
 
-function getStatusClass(status) {
-    const statusClasses = {
-        'scheduled': 'bg-blue-100 text-blue-800',
-        'confirmed': 'bg-green-100 text-green-800',
-        'in_progress': 'bg-yellow-100 text-yellow-800',
-        'completed': 'bg-gray-100 text-gray-800',
-        'cancelled': 'bg-red-100 text-red-800'
+function getStatusTextClass(status) {
+    const classes = {
+        'scheduled': 'text-blue-700',
+        'confirmed': 'text-green-700',
+        'in_progress': 'text-yellow-700',
+        'completed': 'text-gray-600',
+        'cancelled': 'text-red-700',
+        'no_show': 'text-gray-500'
     };
-    return statusClasses[status] || 'bg-gray-100 text-gray-800';
+    return classes[status] || 'text-gray-600';
 }
 
 function showLoading() {
@@ -480,6 +629,7 @@ document.addEventListener('DOMContentLoaded', function() {
         customRange.classList.remove('hidden');
     }
 });
+
 // Close modal when clicking outside or ESC key
 function setupModalClosing() {
     // Click outside to close
@@ -515,5 +665,28 @@ document.addEventListener('DOMContentLoaded', function() {
         customRange.classList.remove('hidden');
     }
 });
+
+// Toggle See All / Show Less for appointments
+document.getElementById('toggleAppointmentsBtn')?.addEventListener('click', function () {
+    const hiddenItems = document.querySelectorAll('#appointmentsContainer .appointment-item.hidden');
+    const btn = this;
+    const icon = btn.querySelector('i');
+
+    if (hiddenItems.length > 0) {
+        // Show all
+        hiddenItems.forEach(item => item.classList.remove('hidden'));
+        btn.innerHTML = 'Show Less <i class="fas fa-chevron-up ml-1"></i>';
+    } else {
+        // Hide extra
+        document.querySelectorAll('#appointmentsContainer .appointment-item:nth-child(n+3)')
+            .forEach(item => item.classList.add('hidden'));
+        btn.innerHTML = 'See All <i class="fas fa-chevron-down ml-1"></i>';
+    }
+});
+
+// Close modal function
+function closeModal(modalId) {
+    document.getElementById(modalId).classList.add('hidden');
+}
 </script>
 @endsection

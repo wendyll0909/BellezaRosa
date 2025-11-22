@@ -63,27 +63,30 @@
                         <td class="px-4 py-3 text-sm text-gray-900">{{ $appointment->staff->user->full_name ?? 'Unassigned' }}</td>
                         <td class="px-4 py-3 text-sm font-semibold text-gray-900">₱{{ number_format($appointment->total_amount, 2) }}</td>
                         <td class="px-4 py-3">
-                            <span class="px-3 py-1 text-xs rounded-full font-semibold
-                                {{ $appointment->status == 'scheduled' ? 'bg-blue-100 text-blue-800' : '' }}
-                                {{ $appointment->status == 'confirmed' ? 'bg-green-100 text-green-800' : '' }}
-                                {{ $appointment->status == 'in_progress' ? 'bg-yellow-100 text-yellow-800' : '' }}
-                                {{ $appointment->status == 'completed' ? 'bg-gray-100 text-gray-800' : '' }}
-                                {{ $appointment->status == 'cancelled' ? 'bg-red-100 text-red-800' : '' }}">
-                                {{ str_replace('_', ' ', ucfirst($appointment->status)) }}
-                            </span>
-                        </td>
+    <span class="text-xs font-semibold
+        {{ $appointment->status == 'scheduled' ? 'text-blue-600' : '' }}
+        {{ $appointment->status == 'confirmed' ? 'text-green-600' : '' }}
+        {{ $appointment->status == 'in_progress' ? 'text-yellow-600' : '' }}
+        {{ $appointment->status == 'completed' ? 'text-gray-600' : '' }}
+        {{ $appointment->status == 'cancelled' ? 'text-red-600' : '' }}">
+        {{ str_replace('_', ' ', ucfirst($appointment->status)) }}
+    </span>
+</td>
+
                         <td class="px-4 py-3">
                             <div class="flex space-x-2">
                                 <form action="{{ route('dashboard.appointments.status', $appointment) }}" method="POST">
-                                    @csrf
-                                    <select name="status" onchange="this.form.submit()" class="text-xs border border-gray-300 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-200">
-                                        <option value="scheduled" {{ $appointment->status == 'scheduled' ? 'selected' : '' }}>Scheduled</option>
-                                        <option value="confirmed" {{ $appointment->status == 'confirmed' ? 'selected' : '' }}>Confirmed</option>
-                                        <option value="in_progress" {{ $appointment->status == 'in_progress' ? 'selected' : '' }}>In Progress</option>
-                                        <option value="completed" {{ $appointment->status == 'completed' ? 'selected' : '' }}>Completed</option>
-                                        <option value="cancelled" {{ $appointment->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
-                                    </select>
-                                </form>
+    @csrf
+    <select name="status" onchange="this.form.submit()"
+        class="text-xs font-semibold rounded-lg px-3 py-1 bg-blue-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-300">
+        <option value="scheduled" {{ $appointment->status == 'scheduled' ? 'selected' : '' }}>Scheduled</option>
+        <option value="confirmed" {{ $appointment->status == 'confirmed' ? 'selected' : '' }}>Confirmed</option>
+        <option value="in_progress" {{ $appointment->status == 'in_progress' ? 'selected' : '' }}>In Progress</option>
+        <option value="completed" {{ $appointment->status == 'completed' ? 'selected' : '' }}>Completed</option>
+        <option value="cancelled" {{ $appointment->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+    </select>
+</form>
+
                                 <button class="text-blue-600 hover:text-blue-800 transition">
                                     <i class="fas fa-edit"></i>
                                 </button>
