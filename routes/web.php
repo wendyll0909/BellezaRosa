@@ -53,3 +53,6 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/appointments', [AppointmentController::class, 'index'])->name('dashboard.appointments.index');
 Route::get('/staff', [StaffController::class, 'index'])->name('dashboard.staff.index');
 Route::get('/reports/financial', [ReportController::class, 'financial'])->name('dashboard.reports.financial');
+// Make sure you have these routes defined
+Route::post('/appointments', [AppointmentController::class, 'store'])->name('dashboard.appointments.store');
+Route::get('/appointments/create', [AppointmentController::class, 'create'])->name('dashboard.appointments.create');

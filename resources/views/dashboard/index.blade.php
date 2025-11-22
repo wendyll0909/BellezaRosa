@@ -684,9 +684,17 @@ document.getElementById('toggleAppointmentsBtn')?.addEventListener('click', func
     }
 });
 
-// Close modal function
+// Modal Functions
+function openBookingModal() {
+    document.getElementById('bookingModal').classList.remove('hidden');
+}
+
 function closeModal(modalId) {
     document.getElementById(modalId).classList.add('hidden');
+}
+
+function openModal(modalId) {
+    document.getElementById(modalId).classList.remove('hidden');
 }
 </script>
 @endsection
