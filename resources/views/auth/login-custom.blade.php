@@ -178,16 +178,19 @@
         }
 
         .input-with-icon i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--gray);
-        }
+    position: absolute;
+    left: 16px;                    /* ← was 15px */
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray);
+    font-size: 18px;               /* ← explicitly set size */
+    pointer-events: none;          /* ← prevents icon from blocking clicks */
+    z-index: 10;
+}
 
         input {
             width: 100%;
-            padding: 14px 14px 14px 45px;
+padding: 14px 14px 14px 45px;  /* ← Change this line */
             border: 1px solid #D1D5DB;
             border-radius: 12px;
             font-size: 16px;
@@ -251,6 +254,9 @@
                 padding: 30px;
             }
         }
+        .input-with-icon input {
+    padding-left: 55px !important;
+}
     </style>
 </head>
 <body>

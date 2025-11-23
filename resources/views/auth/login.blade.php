@@ -36,25 +36,23 @@
 
             <form method="POST" action="{{ route('login') }}">
                 @csrf
-                <div class="mb-6">
-                    <label class="block text-gray-700 font-medium mb-2">Username</label>
-                    <div class="relative">
-                        <i class="fas fa-user absolute left-4 top-4 text-gray-400"></i>
-                        <input type="text" name="username" value="{{ old('username') }}" required
-                               class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 outline-none"
-                               placeholder="Enter your username">
-                    </div>
-                </div>
+                <div class="form-group">
+    <label for="username">Username</label>
+    <div class="input-with-icon">
+        <i class="fas fa-user"></i>
+        <input type="text" id="username" name="username" value="{{ old('username') }}" 
+               placeholder="Enter your username" required>
+    </div>
+</div>
 
-                <div class="mb-8">
-                    <label class="block text-gray-700 font-medium mb-2">Password</label>
-                    <div class="relative">
-                        <i class="fas fa-lock absolute left-4 top-4 text-gray-400"></i>
-                        <input type="password" name="password" required
-                               class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 outline-none"
-                               placeholder="Enter your password">
-                    </div>
-                </div>
+<div class="form-group">
+    <label for="password">Password</label>
+    <div class="input-with-icon">
+        <i class="fas fa-lock"></i>
+        <input type="password" id="password" name="password" 
+               placeholder="Enter your password" required>
+    </div>
+</div>
 
                 <button type="submit" class="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold py-4 rounded-xl transition transform hover:-translate-y-1 shadow-lg">
                     Sign In

@@ -177,13 +177,16 @@
             position: relative;
         }
 
-        .input-with-icon i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--gray);
-        }
+       .input-with-icon i {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray);
+    font-size: 18px;           /* consistent icon size */
+    pointer-events: none;      /* icon never blocks typing/cursor */
+    z-index: 10;
+}
 
         input, select {
             width: 100%;
@@ -194,7 +197,12 @@
             transition: 0.3s;
             font-family: 'Poppins', sans-serif;
         }
-
+/* This is the magic line – forces enough left padding */
+.input-with-icon input,
+.input-with-icon select {
+    padding-left: 56px !important;   /* was 45px → now 56px */
+    height: 56px;                    /* optional: makes it look even cleaner */
+}
         input:focus, select:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 4px rgba(59,130,246,0.2);

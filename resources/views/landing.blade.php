@@ -543,7 +543,7 @@
                                 <div style="position: relative;">
                                     <a href="{{ route('home') }}" style="display: flex; align-items: center;">
                                         <i class="fas fa-bell" style="font-size: 20px;"></i>
-                                        <span class="notification-badge">3</span>
+                                        <span class="notification-badge">1</span>
                                     </a>
                                 </div>
                             </li>
@@ -580,10 +580,10 @@
 </div>
             </div>
             <div class="hero-image">
-                <div style="background: rgba(255,255,255,0.1); height: 400px; border-radius: 20px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px;">
-                    <i class="fas fa-calendar-alt" style="font-size: 120px; opacity: 0.7;"></i>
-                </div>
-            </div>
+    <img src="{{ asset('images/aa.png') }}" 
+         alt="Belleza Rosa Salon" 
+         class="w-full max-w-md lg:max-w-lg xl:max-w-2xl object-cover rounded-2xl">
+</div>
         </div>
     </section>
 
@@ -607,7 +607,7 @@
                         <i class="fas fa-users"></i>
                     </div>
                     <h3>Customer Management</h3>
-                    <p>Keep track of customer preferences, history, and loyalty points to provide personalized service every time.</p>
+                    <p>Keep track of customer preferences, history, and to provide personalized service every time.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
@@ -628,7 +628,7 @@
                         <i class="fas fa-money-bill-wave"></i>
                     </div>
                     <h3>Payment Processing</h3>
-                    <p>Accept multiple payment methods and track transactions seamlessly with our integrated payment system.</p>
+                    <p>Accept multiple payment methods and track transactions seamlessly.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
@@ -719,9 +719,9 @@
                 <div class="footer-column">
                     <h3>Contact Us</h3>
                     <ul class="footer-links">
-                        <li><i class="fas fa-map-marker-alt"></i> 123 Beauty Street, Manila</li>
+                        <li><i class="fas fa-map-marker-alt"></i> 2nd Floor Victoria Plaza, Davao City</li>
                         <li><i class="fas fa-phone"></i> (02) 8123-4567</li>
-                        <li><i class="fas fa-envelope"></i> info@bellezarosa.com</li>
+                        <li><i class="fas fa-envelope"></i> bellezarosa@gmail.com</li>
                         <li><i class="fas fa-clock"></i> Mon-Sat: 9AM-8PM</li>
                     </ul>
                 </div>
