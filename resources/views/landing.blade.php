@@ -526,7 +526,7 @@
         <div class="container">
             <nav class="navbar">
                 <a href="/" class="logo">
-                    <i class="fas fa-spa"></i>
+                    <img src="{{ asset('images/logo.png') }}" alt="Belleza Rosa Logo" style="height: 28px; margin-right: 10px;">
                     <span>Belleza Rosa</span>
                 </a>
                 <ul class="nav-links">

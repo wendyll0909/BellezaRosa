@@ -71,7 +71,7 @@
     <aside class="sidebar">
         <div class="p-6 text-center border-b border-white border-opacity-20">
             <h1 class="text-2xl font-bold flex items-center justify-center">
-                <i class="fas fa-spa text-yellow-500 mr-2"></i> Belleza Rosa
+                <img src="{{ asset('images/logo.png') }}" alt="Belleza Rosa Logo" style="height: 28px; margin-right: 10px;"></i> Belleza Rosa
             </h1>
             <p class="text-sm opacity-75 mt-2">Welcome, {{ auth()->user()->full_name }}</p>
         </div>

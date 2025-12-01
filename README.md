@@ -57,3 +57,202 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+```
+BellezaRosa
+├─ .editorconfig
+├─ app
+│  ├─ Http
+│  │  ├─ Controllers
+│  │  │  ├─ Admin
+│  │  │  │  └─ UserManagementController.php
+│  │  │  ├─ AppointmentController.php
+│  │  │  ├─ Auth
+│  │  │  │  ├─ AuthenticatedSessionController.php
+│  │  │  │  ├─ ConfirmablePasswordController.php
+│  │  │  │  ├─ EmailVerificationNotificationController.php
+│  │  │  │  ├─ EmailVerificationPromptController.php
+│  │  │  │  ├─ NewPasswordController.php
+│  │  │  │  ├─ PasswordController.php
+│  │  │  │  ├─ PasswordResetLinkController.php
+│  │  │  │  ├─ RegisteredUserController.php
+│  │  │  │  └─ VerifyEmailController.php
+│  │  │  ├─ AuthController.php
+│  │  │  ├─ Controller.php
+│  │  │  ├─ CustomerBookingController.php
+│  │  │  ├─ DashboardController.php
+│  │  │  ├─ ProfileController.php
+│  │  │  └─ ServiceController.php
+│  │  ├─ Kernel.php
+│  │  ├─ Middleware
+│  │  │  └─ CheckRole.php
+│  │  └─ Requests
+│  │     ├─ Auth
+│  │     │  └─ LoginRequest.php
+│  │     └─ ProfileUpdateRequest.php
+│  ├─ Livewire
+│  │  ├─ Calendar.php
+│  │  └─ GuestBookingModal.php
+│  ├─ Models
+│  │  ├─ Appointment.php
+│  │  ├─ AppointmentAddon.php
+│  │  ├─ Customer.php
+│  │  ├─ SalonSetting.php
+│  │  ├─ Service.php
+│  │  ├─ ServiceCategory.php
+│  │  ├─ Staff.php
+│  │  └─ User.php
+│  ├─ Observers
+│  │  └─ AppointmentObserver.php
+│  ├─ Providers
+│  │  └─ AppServiceProvider.php
+│  └─ View
+│     └─ Components
+│        ├─ AppLayout.php
+│        └─ GuestLayout.php
+├─ artisan
+├─ bootstrap
+│  ├─ app.php
+│  ├─ cache
+│  │  ├─ packages.php
+│  │  └─ services.php
+│  └─ providers.php
+├─ composer.json
+├─ composer.lock
+├─ config
+│  ├─ app.php
+│  ├─ auth.php
+│  ├─ cache.php
+│  ├─ database.php
+│  ├─ filesystems.php
+│  ├─ logging.php
+│  ├─ mail.php
+│  ├─ queue.php
+│  ├─ services.php
+│  └─ session.php
+├─ database
+│  ├─ factories
+│  │  └─ UserFactory.php
+│  ├─ migrations
+│  │  ├─ 0001_01_01_000000_create_users_table.php
+│  │  ├─ 0001_01_01_000001_create_cache_table.php
+│  │  ├─ 0001_01_01_000002_create_jobs_table.php
+│  │  ├─ 2025_11_19_032622_create_staff_table.php
+│  │  ├─ 2025_11_19_032630_create_customers_table.php
+│  │  ├─ 2025_11_19_032639_create_service_categories_table.php
+│  │  ├─ 2025_11_19_032647_create_services_table.php
+│  │  ├─ 2025_11_19_032656_create_appointments_table.php
+│  │  ├─ 2025_11_19_032704_create_appointment_addons_table.php
+│  │  ├─ 2025_11_19_032711_create_salon_settings_table.php
+│  │  └─ 2025_11_19_151041_create_sessions_table.php
+│  └─ seeders
+│     ├─ AppointmentAddonSeeder.php
+│     ├─ AppointmentSeeder.php
+│     ├─ CustomerSeeder.php
+│     ├─ DatabaseSeeder.php
+│     ├─ ServiceCategorySeeder.php
+│     └─ ServiceSeeder.php
+├─ package-lock.json
+├─ package.json
+├─ phpunit.xml
+├─ postcss.config.js
+├─ public
+│  ├─ .htaccess
+│  ├─ favicon.ico
+│  ├─ images
+│  │  ├─ aa.png
+│  │  └─ logo.jpg
+│  ├─ index.php
+│  └─ robots.txt
+├─ README.md
+├─ resources
+│  ├─ css
+│  │  └─ app.css
+│  ├─ js
+│  │  ├─ app.js
+│  │  └─ bootstrap.js
+│  └─ views
+│     ├─ auth
+│     │  ├─ confirm-password.blade.php
+│     │  ├─ forgot-password.blade.php
+│     │  ├─ login-custom.blade.php
+│     │  ├─ login.blade.php
+│     │  ├─ register-custom.blade.php
+│     │  ├─ register.blade.php
+│     │  ├─ reset-password.blade.php
+│     │  └─ verify-email.blade.php
+│     ├─ components
+│     │  ├─ application-logo.blade.php
+│     │  ├─ auth-session-status.blade.php
+│     │  ├─ danger-button.blade.php
+│     │  ├─ dropdown-link.blade.php
+│     │  ├─ dropdown.blade.php
+│     │  ├─ input-error.blade.php
+│     │  ├─ input-label.blade.php
+│     │  ├─ modal.blade.php
+│     │  ├─ nav-link.blade.php
+│     │  ├─ primary-button.blade.php
+│     │  ├─ responsive-nav-link.blade.php
+│     │  ├─ secondary-button.blade.php
+│     │  └─ text-input.blade.php
+│     ├─ dashboard
+│     │  ├─ appointments
+│     │  │  └─ index.blade.php
+│     │  ├─ index.blade.php
+│     │  ├─ partials
+│     │  │  ├─ booking-modal.blade.php
+│     │  │  └─ customer-services-modal.blade.php
+│     │  ├─ services
+│     │  │  └─ index.blade.php
+│     │  └─ users
+│     │     └─ index.blade.php
+│     ├─ dashboard.blade.php
+│     ├─ landing.blade.php
+│     ├─ layouts
+│     │  ├─ app.blade.php
+│     │  ├─ dashboard.blade.php
+│     │  ├─ guest.blade.php
+│     │  └─ navigation.blade.php
+│     ├─ livewire
+│     │  ├─ calendar.blade.php
+│     │  └─ guest-booking-modal.blade.php
+│     ├─ profile
+│     │  ├─ edit.blade.php
+│     │  └─ partials
+│     │     ├─ delete-user-form.blade.php
+│     │     ├─ update-password-form.blade.php
+│     │     └─ update-profile-information-form.blade.php
+│     └─ welcome.blade.php
+├─ routes
+│  ├─ auth.php
+│  ├─ console.php
+│  └─ web.php
+├─ storage
+│  ├─ app
+│  │  ├─ private
+│  │  └─ public
+│  ├─ framework
+│  │  ├─ cache
+│  │  │  └─ data
+│  │  ├─ sessions
+│  │  ├─ testing
+│  │  └─ views
+│  └─ logs
+├─ tailwind.config.js
+├─ tests
+│  ├─ Feature
+│  │  ├─ Auth
+│  │  │  ├─ AuthenticationTest.php
+│  │  │  ├─ EmailVerificationTest.php
+│  │  │  ├─ PasswordConfirmationTest.php
+│  │  │  ├─ PasswordResetTest.php
+│  │  │  ├─ PasswordUpdateTest.php
+│  │  │  └─ RegistrationTest.php
+│  │  ├─ ExampleTest.php
+│  │  └─ ProfileTest.php
+│  ├─ TestCase.php
+│  └─ Unit
+│     └─ ExampleTest.php
+└─ vite.config.js
+
+```
