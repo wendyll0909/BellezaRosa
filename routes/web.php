@@ -6,6 +6,7 @@ use App\Http\Controllers\CustomerBookingController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\PaymentController;        // ← ONLY THIS LINE ADDED
 use Illuminate\Support\Facades\Route;
 
 // Guest Routes
@@ -41,15 +42,26 @@ Route::middleware(['auth'])->group(function () {
 
         // Services
         Route::resource('services', ServiceController::class);
-
+        
+        // Payments
+        Route::get('payments', [PaymentController::class, 'index'])->name('payments.index');
+        Route::get('payments/{payment}', [PaymentController::class, 'show'])->name('payments.show');
+        Route::get('appointments/{appointment}/payment/create', [PaymentController::class, 'createForAppointment'])->name('payments.create');
+        Route::post('payments', [PaymentController::class, 'store'])->name('payments.store');
+        Route::post('payments/{payment}/status', [PaymentController::class, 'updateStatus'])->name('payments.status');
+        Route::get('payments/{payment}/edit', [PaymentController::class, 'edit'])->name('payments.edit');
+        Route::put('payments/{payment}', [PaymentController::class, 'update'])->name('payments.update'); 
+    
         // User Management (Admin only) - using controller-level checks
         Route::get('users', [UserManagementController::class, 'index'])->name('users.index');
         Route::patch('users/{user}/role', [UserManagementController::class, 'updateRole'])->name('users.role');
         Route::patch('users/{user}/toggle-active', [UserManagementController::class, 'toggleActive'])->name('users.toggle');
     });
+    
     // AJAX route for dashboard filtering
-        Route::post('/dashboard/filter', [DashboardController::class, 'filter'])->name('dashboard.filter');
+    Route::post('/dashboard/filter', [DashboardController::class, 'filter'])->name('dashboard.filter');
 });
+
 Route::get('/appointments', [AppointmentController::class, 'index'])->name('dashboard.appointments.index');
 Route::get('/staff', [StaffController::class, 'index'])->name('dashboard.staff.index');
 Route::get('/reports/financial', [ReportController::class, 'financial'])->name('dashboard.reports.financial');

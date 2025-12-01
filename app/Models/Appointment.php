@@ -45,4 +45,8 @@ class Appointment extends Model
     {
         return $this->hasMany(AppointmentAddon::class);
     }
+    public function payment()
+{
+    return $this->hasOne(Payment::class);
+}
 }

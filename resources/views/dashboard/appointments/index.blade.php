@@ -50,57 +50,86 @@
                 </thead>
                 <tbody class="divide-y divide-gray-200">
                     @forelse($appointments as $appointment)
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-4 py-3 text-sm">
-                            <div class="font-medium text-gray-900">{{ $appointment->start_datetime->format('M j, Y') }}</div>
-                            <div class="text-gray-500">{{ $appointment->start_datetime->format('g:i A') }}</div>
-                        </td>
-                        <td class="px-4 py-3">
-                            <div class="font-medium text-gray-900">{{ $appointment->customer->full_name }}</div>
-                            <div class="text-sm text-gray-500">{{ $appointment->customer->phone }}</div>
-                        </td>
-                        <td class="px-4 py-3 text-sm text-gray-900">{{ $appointment->service->name }}</td>
-                        <td class="px-4 py-3 text-sm text-gray-900">{{ $appointment->staff->user->full_name ?? 'Unassigned' }}</td>
-                        <td class="px-4 py-3 text-sm font-semibold text-gray-900">₱{{ number_format($appointment->total_amount, 2) }}</td>
-                        <td class="px-4 py-3">
-    <span class="text-xs font-semibold
-        {{ $appointment->status == 'scheduled' ? 'text-blue-600' : '' }}
-        {{ $appointment->status == 'confirmed' ? 'text-green-600' : '' }}
-        {{ $appointment->status == 'in_progress' ? 'text-yellow-600' : '' }}
-        {{ $appointment->status == 'completed' ? 'text-gray-600' : '' }}
-        {{ $appointment->status == 'cancelled' ? 'text-red-600' : '' }}">
-        {{ str_replace('_', ' ', ucfirst($appointment->status)) }}
-    </span>
-</td>
+<tr class="hover:bg-gray-50">
+    <td class="px-4 py-3 text-sm">
+        <div class="font-medium text-gray-900">{{ $appointment->start_datetime->format('M j, Y') }}</div>
+        <div class="text-gray-500">{{ $appointment->start_datetime->format('g:i A') }}</div>
+    </td>
+    <td class="px-4 py-3">
+        <div class="font-medium text-gray-900">{{ $appointment->customer->full_name }}</div>
+        <div class="text-sm text-gray-500">{{ $appointment->customer->phone }}</div>
+    </td>
+    <td class="px-4 py-3 text-sm text-gray-900">{{ $appointment->service->name }}</td>
+    <td class="px-4 py-3 text-sm text-gray-900">{{ $appointment->staff->user->full_name ?? 'Unassigned' }}</td>
+    <td class="px-4 py-3 text-sm font-semibold text-gray-900">₱{{ number_format($appointment->total_amount, 2) }}</td>
+    <td class="px-4 py-3">
+        <span class="text-xs font-semibold
+            {{ $appointment->status == 'scheduled' ? 'text-blue-600' : '' }}
+            {{ $appointment->status == 'confirmed' ? 'text-green-600' : '' }}
+            {{ $appointment->status == 'in_progress' ? 'text-yellow-600' : '' }}
+            {{ $appointment->status == 'completed' ? 'text-gray-600' : '' }}
+            {{ $appointment->status == 'cancelled' ? 'text-red-600' : '' }}">
+            {{ str_replace('_', ' ', ucfirst($appointment->status)) }}
+        </span>
+    </td>
 
-                        <td class="px-4 py-3">
-                            <div class="flex space-x-2">
-                                <form action="{{ route('dashboard.appointments.status', $appointment) }}" method="POST">
-    @csrf
-    <select name="status" onchange="this.form.submit()"
-        class="text-xs font-semibold rounded-lg px-3 py-1 bg-blue-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-300">
-        <option value="scheduled" {{ $appointment->status == 'scheduled' ? 'selected' : '' }}>Scheduled</option>
-        <option value="confirmed" {{ $appointment->status == 'confirmed' ? 'selected' : '' }}>Confirmed</option>
-        <option value="in_progress" {{ $appointment->status == 'in_progress' ? 'selected' : '' }}>In Progress</option>
-        <option value="completed" {{ $appointment->status == 'completed' ? 'selected' : '' }}>Completed</option>
-        <option value="cancelled" {{ $appointment->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
-    </select>
-</form>
+    <!-- Updated Actions Column -->
+    <td classacb class="px-4 py-3">
+        <div class="flex space-x-3 items-center">
 
-                                <button class="text-blue-600 hover:text-blue-800 transition">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="7" class="px-4 py-8 text-center text-gray-500">
-                            <i class="fas fa-calendar-times text-4xl mb-3 text-gray-300"></i>
-                            <p>No appointments found.</p>
-                        </td>
-                    </tr>
-                    @endforelse
+            <!-- Status Update -->
+            <form action="{{ route('dashboard.appointments.status', $appointment) }}" method="POST" class="inline">
+                @csrf
+                <select name="status" onchange="this.form.submit()"
+                    class="text-xs font-semibold rounded-lg px-3 py-1 bg-blue-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-300">
+                    <option value="scheduled" {{ $appointment->status == 'scheduled' ? 'selected' : '' }}>Scheduled</option>
+                    <option value="confirmed" {{ $appointment->status == 'confirmed' ? 'selected' : '' }}>Confirmed</option>
+                    <option value="in_progress" {{ $appointment->status == 'in_progress' ? 'selected' : '' }}>In Progress</option>
+                    <option value="completed" {{ $appointment->status == 'completed' ? 'selected' : '' }}>Completed</option>
+                    <option value="cancelled" {{ $appointment->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                </select>
+            </form>
+
+            <!-- Edit -->
+            <a href="{{ route('dashboard.appointments.edit', $appointment) }}"
+               class="text-blue-600 hover:text-blue-800 transition" title="Edit Appointment">
+                <i class="fas fa-edit"></i>
+            </a>
+
+            <!-- Record Payment -->
+            <a href="{{ route('dashboard.payments.create', $appointment) }}"
+               class="text-green-600 hover:text-green-800 transition"
+               title="Record Payment">
+                <i class="fas fa-money-bill-wave"></i>
+            </a>
+
+            <!-- View Payment (if exists) -->
+            @if($appointment->payment()->exists())
+                <a href="{{ route('dashboard.payments.show', $appointment->payment) }}"
+                   class="text-indigo-600 hover:text-indigo-800 transition"
+                   title="View Payment Details">
+                    <i class="fas fa-eye"></i>
+                </a>
+            @endif
+
+            <!-- Paid Indicator -->
+            @if($appointment->payment && $appointment->payment->is_paid)
+                <span class="text-green-600 font-bold" title="Fully Paid">
+                    <i class="fas fa-check-circle"></i>
+                </span>
+            @endif
+
+        </div>
+    </td>
+</tr>
+@empty
+<tr>
+    <td colspan="7" class="px-4 py-8 text-center text-gray-500">
+        <i class="fas fa-calendar-times text-4xl mb-3 text-gray-300"></i>
+        <p>No appointments found.</p>
+    </td>
+</tr>
+@endforelse
                 </tbody>
             </table>
         </div>

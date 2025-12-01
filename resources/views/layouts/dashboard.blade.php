@@ -75,25 +75,29 @@
             </h1>
             <p class="text-sm opacity-75 mt-2">Welcome, {{ auth()->user()->full_name }}</p>
         </div>
-        <nav class="mt-6">
-            <div class="nav-item {{ request()->is('dashboard') ? 'active' : '' }}" onclick="location.href='{{ route('dashboard.index') }}'">
-                <i class="fas fa-home mr-3"></i> Dashboard
-            </div>
-            <div class="nav-item {{ request()->is('dashboard/appointments*') ? 'active' : '' }}" onclick="location.href='{{ route('dashboard.appointments.index') }}'">
-                <i class="fas fa-calendar-check mr-3"></i> Appointments
-            </div>
-            <div class="nav-item {{ request()->is('dashboard/services*') ? 'active' : '' }}" onclick="location.href='{{ route('dashboard.services.index') }}'">
-                <i class="fas fa-spa mr-3"></i> Services
-            </div>
-            @if(auth()->user()->isAdmin())
-                <div class="nav-item {{ request()->is('dashboard/users*') ? 'active' : '' }}" onclick="location.href='{{ route('dashboard.users.index') }}'">
-                    <i class="fas fa-users-cog mr-3"></i> Manage Users
-                </div>
-            @endif
-            <div class="nav-item mt-auto" onclick="document.getElementById('logout-form').submit()">
-                <i class="fas fa-sign-out-alt mr-3"></i> Logout
-            </div>
-        </nav>
+        <!-- Update in dashboard.blade.php sidebar -->
+<nav class="mt-6">
+    <div class="nav-item {{ request()->is('dashboard') ? 'active' : '' }}" onclick="location.href='{{ route('dashboard.index') }}'">
+        <i class="fas fa-home mr-3"></i> Dashboard
+    </div>
+    <div class="nav-item {{ request()->is('dashboard/appointments*') ? 'active' : '' }}" onclick="location.href='{{ route('dashboard.appointments.index') }}'">
+        <i class="fas fa-calendar-check mr-3"></i> Appointments
+    </div>
+    <div class="nav-item {{ request()->is('dashboard/payments*') ? 'active' : '' }}" onclick="location.href='{{ route('dashboard.payments.index') }}'">
+        <i class="fas fa-money-bill-wave mr-3"></i> Payments
+    </div>
+    <div class="nav-item {{ request()->is('dashboard/services*') ? 'active' : '' }}" onclick="location.href='{{ route('dashboard.services.index') }}'">
+        <i class="fas fa-spa mr-3"></i> Services
+    </div>
+    @if(auth()->user()->isAdmin())
+        <div class="nav-item {{ request()->is('dashboard/users*') ? 'active' : '' }}" onclick="location.href='{{ route('dashboard.users.index') }}'">
+            <i class="fas fa-users-cog mr-3"></i> Manage Users
+        </div>
+    @endif
+    <div class="nav-item mt-auto" onclick="document.getElementById('logout-form').submit()">
+        <i class="fas fa-sign-out-alt mr-3"></i> Logout
+    </div>
+</nav>
     </aside>
 
     <!-- Main Content -->
