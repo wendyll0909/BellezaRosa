@@ -83,6 +83,9 @@
     <div class="nav-item {{ request()->is('dashboard/appointments*') ? 'active' : '' }}" onclick="location.href='{{ route('dashboard.appointments.index') }}'">
         <i class="fas fa-calendar-check mr-3"></i> Appointments
     </div>
+    <div class="nav-item {{ request()->is('dashboard/inventory*') ? 'active' : '' }}" onclick="location.href='{{ route('dashboard.inventory.index') }}'">
+        <i class="fas fa-boxes mr-3"></i> Inventory
+    </div>
     <div class="nav-item {{ request()->is('dashboard/payments*') ? 'active' : '' }}" onclick="location.href='{{ route('dashboard.payments.index') }}'">
         <i class="fas fa-money-bill-wave mr-3"></i> Payments
     </div>

@@ -532,8 +532,8 @@
                 <ul class="nav-links">
                     <li><a href="#features">Features</a></li>
                     <li><a href="#services">Services</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#contact">Contact</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#contact">Contact</a></li>
 
                     @auth
                         @if(auth()->user()->isAdmin() || auth()->user()->isStaff())
@@ -669,16 +669,7 @@
                         <div class="service-price">Starting at ₱250</div>
                     </div>
                 </div>
-                <div class="service-card">
-                    <div class="service-image" style="background: #BAE6FD;">
-                        <i class="fas fa-spa" style="color: #0EA5E9;"></i>
-                    </div>
-                    <div class="service-content">
-                        <h3>Skin Treatments</h3>
-                        <p>Rejuvenate your skin with our specialized facials and treatments tailored to your unique skin needs.</p>
-                        <div class="service-price">Starting at ₱800</div>
-                    </div>
-                </div>
+                
             </div>
         </div>
     </section>
@@ -693,7 +684,10 @@
 </section>
 
     <!-- Footer -->
-    <footer>
+    <footer id="footer">
+    <!-- Add these two lines right at the beginning of the footer -->
+    <div id="about"></div>
+    <div id="contact"></div>
         <div class="container">
             <div class="footer-content">
                 <div class="footer-column">
