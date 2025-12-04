@@ -21,30 +21,67 @@
     </div>
 
     <!-- Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="card">
-            <div class="text-center">
-                <div class="text-3xl font-bold text-gray-900">{{ $items->count() }}</div>
-                <div class="text-gray-600">Total Items</div>
-            </div>
-        </div>
-        
-        <div class="card">
-            <div class="text-center">
-                <div class="text-3xl font-bold {{ $lowStockCount > 0 ? 'text-yellow-600' : 'text-gray-900' }}">
-                    {{ $lowStockCount }}
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Total Items Card -->
+    <div class="card border-l-4 border-blue-500">
+        <div class="flex items-center justify-between">
+            <!-- Left Group: Icon and Title -->
+            <div class="flex items-center">
+                <div class="p-3 bg-blue-100 rounded-xl">
+                    <i class="fas fa-boxes text-blue-600 text-xl"></i>
                 </div>
-                <div class="text-gray-600">Low Stock Items</div>
+                <div class="ml-4">
+                    <h3 class="text-sm font-medium text-gray-500">Total Items</h3>
+                </div>
             </div>
-        </div>
-        
-        <div class="card">
-            <div class="text-center">
-                <div class="text-3xl font-bold text-gray-900">{{ $todayUpdates->count() }}</div>
-                <div class="text-gray-600">Today's Updates</div>
-            </div>
+            
+            <!-- Right Group: The Number -->
+            <p class="text-2xl font-bold text-gray-900">{{ $items->count() }}</p>
         </div>
     </div>
+    
+    <!-- Low Stock Items Card -->
+    <div class="card border-l-4 {{ $lowStockCount > 0 ? 'border-yellow-500' : 'border-gray-400' }}">
+        <div class="flex items-center justify-between">
+            <!-- Left Group: Icon and Title -->
+            <div class="flex items-center">
+                <div class="p-3 {{ $lowStockCount > 0 ? 'bg-yellow-100' : 'bg-gray-100' }} rounded-xl">
+                    <i class="fas fa-exclamation-triangle {{ $lowStockCount > 0 ? 'text-yellow-600' : 'text-gray-500' }} text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <h3 class="text-sm font-medium text-gray-500">Low Stock Items</h3>
+                </div>
+            </div>
+            
+            <!-- Right Group: The Number -->
+            <p class="text-2xl font-bold {{ $lowStockCount > 0 ? 'text-black-600' : 'text-gray-900' }}">
+                {{ $lowStockCount }}
+            </p>
+        </div>
+    </div>
+    
+    <!-- Today's Updates Card -->
+    <div class="card border-l-4 {{ $todayUpdates->count() > 0 ? 'border-green-500' : 'border-gray-400' }}">
+        <div class="flex items-center justify-between">
+            <!-- Left Group: Icon and Title -->
+            <div class="flex items-center">
+                <div class="p-3 {{ $todayUpdates->count() > 0 ? 'bg-green-100' : 'bg-gray-100' }} rounded-xl">
+                    <i class="fas fa-sync-alt {{ $todayUpdates->count() > 0 ? 'text-green-600' : 'text-gray-500' }} text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <h3 class="text-sm font-medium text-gray-500">
+                        {{ $selectedDate == today()->toDateString() ? "Today's" : "Selected Date's" }} Updates
+                    </h3>
+                </div>
+            </div>
+            
+            <!-- Right Group: The Number -->
+            <p class="text-2xl font-bold {{ $todayUpdates->count() > 0 ? 'text-black-600' : 'text-gray-900' }}">
+                {{ $todayUpdates->count() }}
+            </p>
+        </div>
+    </div>
+</div>
 
     <!-- Inventory Table -->
 <div class="card">

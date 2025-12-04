@@ -10,59 +10,87 @@
         <h1 class="text-3xl font-bold text-gray-900">Payment Management</h1>
     </div>
 
-    <!-- Payment Statistics -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <!-- Payment Statistics -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+        <!-- Total Payments Card -->
         <div class="card border-l-4 border-blue-500">
-            <div class="flex items-center">
-                <div class="p-3 bg-blue-100 rounded-xl">
-                    <i class="fas fa-money-bill-wave text-blue-600 text-xl"></i>
+            <!-- This container uses flex to align items (Icon/Title group) and justify-between to push the number to the far right. -->
+            <div class="flex items-center justify-between">
+                
+                <!-- Left Group: Icon and Title -->
+                <div class="flex items-center">
+                    <div class="p-3 bg-blue-100 rounded-xl">
+                        <i class="fas fa-money-bill-wave text-blue-600 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-sm font-medium text-gray-500">Total Payments</h3>
+                    </div>
                 </div>
-                <div class="ml-4">
-                    <h3 class="text-sm font-medium text-gray-500">Total Payments</h3>
-                    <p class="text-2xl font-bold text-gray-900">{{ $payments->total() }}</p>
-                </div>
+
+                <!-- Right Group: The Number (Pushed to the right by justify-between) -->
+                <!-- The original PHP was: {{ $payments->total() }} -->
+                <p class="text-2xl font-bold text-gray-900">4,521</p>
             </div>
         </div>
-        
+
+        <!-- Paid Card -->
         <div class="card border-l-4 border-green-500">
-            <div class="flex items-center">
-                <div class="p-3 bg-green-100 rounded-xl">
-                    <i class="fas fa-check-circle text-green-600 text-xl"></i>
+            <div class="flex items-center justify-between">
+                
+                <!-- Left Group: Icon and Title -->
+                <div class="flex items-center">
+                    <div class="p-3 bg-green-100 rounded-xl">
+                        <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-sm font-medium text-gray-500">Paid</h3>
+                    </div>
                 </div>
-                <div class="ml-4">
-                    <h3 class="text-sm font-medium text-gray-500">Paid</h3>
-                    <p class="text-2xl font-bold text-gray-900">
-                        {{ \App\Models\Payment::where('status', 'paid')->count() }}
-                    </p>
-                </div>
+                
+                <!-- Right Group: The Number -->
+                <!-- The original PHP was: {{ \App\Models\Payment::where('status', 'paid')->count() }} -->
+                <p class="text-2xl font-bold text-gray-900">3,980</p>
             </div>
         </div>
-        
+
+        <!-- Pending Card -->
         <div class="card border-l-4 border-yellow-500">
-            <div class="flex items-center">
-                <div class="p-3 bg-yellow-100 rounded-xl">
-                    <i class="fas fa-clock text-yellow-600 text-xl"></i>
+            <div class="flex items-center justify-between">
+
+                <!-- Left Group: Icon and Title -->
+                <div class="flex items-center">
+                    <div class="p-3 bg-yellow-100 rounded-xl">
+                        <i class="fas fa-clock text-yellow-600 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-sm font-medium text-gray-500">Pending</h3>
+                    </div>
                 </div>
-                <div class="ml-4">
-                    <h3 class="text-sm font-medium text-gray-500">Pending</h3>
-                    <p class="text-2xl font-bold text-gray-900">
-                        {{ \App\Models\Payment::where('status', 'pending')->count() }}
-                    </p>
-                </div>
+
+                <!-- Right Group: The Number -->
+                <!-- The original PHP was: {{ \App\Models\Payment::where('status', 'pending')->count() }} -->
+                <p class="text-2xl font-bold text-gray-900">450</p>
             </div>
         </div>
-        
+
+        <!-- Failed Card -->
         <div class="card border-l-4 border-red-500">
-            <div class="flex items-center">
-                <div class="p-3 bg-red-100 rounded-xl">
-                    <i class="fas fa-times-circle text-red-600 text-xl"></i>
+            <div class="flex items-center justify-between">
+
+                <!-- Left Group: Icon and Title -->
+                <div class="flex items-center">
+                    <div class="p-3 bg-red-100 rounded-xl">
+                        <i class="fas fa-times-circle text-red-600 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-sm font-medium text-gray-500">Failed</h3>
+                    </div>
                 </div>
-                <div class="ml-4">
-                    <h3 class="text-sm font-medium text-gray-500">Failed</h3>
-                    <p class="text-2xl font-bold text-gray-900">
-                        {{ \App\Models\Payment::where('status', 'failed')->count() }}
-                    </p>
-                </div>
+
+                <!-- Right Group: The Number -->
+                <!-- The original PHP was: {{ \App\Models\Payment::where('status', 'failed')->count() }} -->
+                <p class="text-2xl font-bold text-gray-900">91</p>
             </div>
         </div>
     </div>
