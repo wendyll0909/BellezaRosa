@@ -17,21 +17,28 @@ public function index(Request $request)
     // Get selected date or default to today
     $selectedDate = $request->get('date', today()->toDateString());
     
-    // Get updates for selected date - ALL updates, not just latest
-    $updatesQuery = InventoryUpdate::whereDate('update_date', $selectedDate)
+    // Get updates for selected date
+    $todayUpdates = InventoryUpdate::whereDate('update_date', $selectedDate)
         ->with(['item', 'updatedBy'])
-        ->orderBy('created_at', 'DESC');
-    
-    $todayUpdates = $updatesQuery->get();
-    
+        ->orderBy('created_at', 'DESC')
+        ->get();
+
     // Get available dates for calendar (dates that have updates)
     $availableDates = InventoryUpdate::selectRaw('DISTINCT DATE(update_date) as date')
         ->orderBy('date', 'DESC')
         ->limit(30) // Last 30 days
         ->pluck('date');
+    
+    // Check if we should show all items or just limited
+    $showAllItems = $request->get('show_all', false);
+    $totalItemsCount = $items->count();
+    
+    // Limit items to 3 if not showing all
+    $limitedItems = $showAllItems ? $items : $items->take(3);
 
     return view('dashboard.inventory.index', compact(
-        'items', 'lowStockCount', 'todayUpdates', 'selectedDate', 'availableDates'
+        'items', 'limitedItems', 'lowStockCount', 'todayUpdates', 
+        'selectedDate', 'availableDates', 'totalItemsCount', 'showAllItems'
     ));
 }
 // Save daily updates with removed items handling

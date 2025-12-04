@@ -45,6 +45,89 @@
             </div>
         </div>
     </div>
+
+    <!-- Inventory Table -->
+<div class="card">
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold text-gray-900">Inventory Items</h2>
+        <div class="flex items-center space-x-2">
+            <span class="text-sm text-gray-600">
+                Showing {{ $limitedItems->count() }} of {{ $totalItemsCount }} items
+            </span>
+        </div>
+    </div>
+    
+    <div class="overflow-x-auto">
+        <table class="w-full">
+            <thead>
+                <tr class="bg-blue-600 text-white">
+                    <th class="px-4 py-3 text-left">Item</th>
+                    <th class="px-4 py-3 text-left">Current Stock</th>
+                    <th class="px-4 py-3 text-left">Min Stock</th>
+                    <th class="px-4 py-3 text-left">Unit</th>
+                    <th class="px-4 py-3 text-left">Status</th>
+                    <th class="px-4 py-3 text-left">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                @foreach($limitedItems as $item)
+                <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-3">
+                        <div class="font-medium text-gray-900">{{ $item->name }}</div>
+                        <div class="text-sm text-gray-500">{{ $item->category }}</div>
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="text-xl font-bold text-gray-900">{{ $item->current_stock }}</div>
+                    </td>
+                    <td class="px-4 py-3 text-gray-700">{{ $item->minimum_stock }}</td>
+                    <td class="px-4 py-3 text-gray-700">{{ $item->unit }}</td>
+                    <td class="px-4 py-3">
+                        @if($item->current_stock == 0)
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+                                Out of Stock
+                            </span>
+                        @elseif($item->isLowStock())
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                Low Stock
+                            </span>
+                        @else
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                                In Stock
+                            </span>
+                        @endif
+                    </td>
+                    <td class="px-4 py-3">
+                        <button onclick="updateStockModal({{ $item->id }})" 
+                                class="text-blue-600 hover:text-blue-800 transition px-2 py-1 hover:bg-blue-50 rounded-lg">
+                            <i class="fas fa-edit mr-1"></i> Update
+                        </button>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Show More/Less Toggle -->
+    @if($totalItemsCount > 3)
+    <div class="mt-4 pt-4 border-t border-gray-200 text-center">
+        @if(!$showAllItems)
+        <button onclick="showAllItems()"
+                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition inline-flex items-center">
+            <i class="fas fa-eye mr-2"></i> Show All {{ $totalItemsCount }} Items
+        </button>
+        @else
+        <div class="flex items-center justify-center space-x-4">
+            <span class="text-gray-600">Showing all {{ $totalItemsCount }} items</span>
+            <button onclick="showLessItems()"
+                    class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-xl transition inline-flex items-center">
+                <i class="fas fa-eye-slash mr-2"></i> Show Less
+            </button>
+        </div>
+        @endif
+    </div>
+    @endif
+</div>
 <!-- Date Filter -->
 <div class="card">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -91,60 +174,6 @@
     </div>
     @endif
 </div>
-    <!-- Inventory Table -->
-    <div class="card">
-        <div class="overflow-x-auto">
-            <table class="w-full">
-                <thead>
-                    <tr class="bg-blue-600 text-white">
-                        <th class="px-4 py-3 text-left">Item</th>
-                        <th class="px-4 py-3 text-left">Current Stock</th>
-                        <th class="px-4 py-3 text-left">Min Stock</th>
-                        <th class="px-4 py-3 text-left">Unit</th>
-                        <th class="px-4 py-3 text-left">Status</th>
-                        <th class="px-4 py-3 text-left">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200">
-                    @foreach($items as $item)
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-4 py-3">
-                            <div class="font-medium text-gray-900">{{ $item->name }}</div>
-                            <div class="text-sm text-gray-500">{{ $item->category }}</div>
-                        </td>
-                        <td class="px-4 py-3">
-                            <div class="text-xl font-bold text-gray-900">{{ $item->current_stock }}</div>
-                        </td>
-                        <td class="px-4 py-3 text-gray-700">{{ $item->minimum_stock }}</td>
-                        <td class="px-4 py-3 text-gray-700">{{ $item->unit }}</td>
-                        <td class="px-4 py-3">
-                            @if($item->current_stock == 0)
-                                <span class="px-2 py-1 text-xs font-semibold  text-red-800">
-                                    Out of Stock
-                                </span>
-                            @elseif($item->isLowStock())
-                                <span class="px-2 py-1 text-xs font-semibold  text-yellow-800">
-                                    Low Stock
-                                </span>
-                            @else
-                                <span class="px-2 py-1 text-xs font-semibold  text-green-800">
-                                    In Stock
-                                </span>
-                            @endif
-                        </td>
-                        <td class="px-4 py-3">
-                            <button onclick="updateStockModal({{ $item->id }})" 
-                                    class="text-blue-600 hover:text-blue-800 transition">
-                                <i class="fas fa-edit"></i> Update
-                            </button>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div>
-
 <!-- Recent Updates -->
 @if($todayUpdates->count() > 0)
 <div class="card">
@@ -186,20 +215,20 @@
         </div>
         @endforeach
     </div>
-</div>
-@else
-<div class="card text-center py-8">
-    <i class="fas fa-clipboard-list text-gray-300 text-4xl mb-4"></i>
-    <h3 class="text-lg font-semibold text-gray-700 mb-2">No updates found</h3>
-    <p class="text-gray-500">
+    </div>
+    @else
+    <div class="card text-center py-8">
+      <i class="fas fa-clipboard-list text-gray-300 text-4xl mb-4"></i>
+     <h3 class="text-lg font-semibold text-gray-700 mb-2">No updates found</h3>
+      <p class="text-gray-500">
         @if($selectedDate == today()->toDateString())
             No stock updates recorded today.
         @else
             No stock updates recorded on {{ \Carbon\Carbon::parse($selectedDate)->format('F d, Y') }}.
         @endif
-    </p>
-</div>
-@endif
+      </p>
+   </div>
+   @endif
 </div>
 
 <!-- Add Item Modal -->
@@ -479,6 +508,21 @@ function showToast(message, type = 'info') {
             toast.remove();
         }
     }, 3000);
+}
+// Show All Items
+function showAllItems() {
+    // Add show_all parameter to URL
+    const currentUrl = new URL(window.location.href);
+    currentUrl.searchParams.set('show_all', 'true');
+    window.location.href = currentUrl.toString();
+}
+
+// Show Less Items
+function showLessItems() {
+    // Remove show_all parameter from URL
+    const currentUrl = new URL(window.location.href);
+    currentUrl.searchParams.delete('show_all');
+    window.location.href = currentUrl.toString();
 }
 </script>
 @endsection
