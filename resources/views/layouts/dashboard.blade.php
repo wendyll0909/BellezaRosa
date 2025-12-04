@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Dashboard - Belleza Rosa')</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -84,8 +85,8 @@
         <i class="fas fa-calendar-check mr-3"></i> Appointments
     </div>
     <div class="nav-item {{ request()->is('dashboard/inventory*') ? 'active' : '' }}" onclick="location.href='{{ route('dashboard.inventory.index') }}'">
-        <i class="fas fa-boxes mr-3"></i> Inventory
-    </div>
+    <i class="fas fa-boxes mr-3"></i> Inventory
+</div>
     <div class="nav-item {{ request()->is('dashboard/payments*') ? 'active' : '' }}" onclick="location.href='{{ route('dashboard.payments.index') }}'">
         <i class="fas fa-money-bill-wave mr-3"></i> Payments
     </div>

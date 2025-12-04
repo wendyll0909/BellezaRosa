@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\PaymentController;        // ← ONLY THIS LINE ADDED
+use App\Http\Controllers\InventoryController; // ← ADD THIS LINE
 use Illuminate\Support\Facades\Route;
 
 // Guest Routes
@@ -43,6 +44,14 @@ Route::middleware(['auth'])->group(function () {
         // Services
         Route::resource('services', ServiceController::class);
         
+         // Simple Inventory Routes
+Route::get('inventory/items/{item}', [InventoryController::class, 'getItem'])->name('inventory.items.show');
+Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
+Route::get('/inventory/daily-update', [InventoryController::class, 'dailyUpdate'])->name('inventory.daily-update');
+    Route::post('inventory/items', [InventoryController::class, 'storeItem'])->name('inventory.items.store');
+    Route::post('inventory/items/{item}/update-stock', [InventoryController::class, 'updateStock'])->name('inventory.items.update-stock');
+Route::post('inventory/daily-update-save', [InventoryController::class, 'saveDailyUpdates'])
+    ->name('inventory.daily-update.save');
         // Payments
         Route::get('payments', [PaymentController::class, 'index'])->name('payments.index');
         Route::get('payments/{payment}', [PaymentController::class, 'show'])->name('payments.show');
