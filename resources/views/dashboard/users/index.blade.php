@@ -6,12 +6,81 @@
 <div class="space-y-6">
     <!-- Header -->
     <div class="flex justify-between items-center">
-        <h1 class="text-3xl font-bold text-gray-900">User Management</h1>
+        <h1 class="text-3xl font-bold text-gray-900">Users</h1>
         <button onclick="openAddUserModal()" class="bg-yellow-500 hover:bg-yellow-400 text-blue-900 font-bold py-3 px-6 rounded-xl shadow-lg transform hover:-translate-y-1 transition">
             <i class="fas fa-user-plus mr-2"></i> Add User
         </button>
     </div>
+<!-- Statistics -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+    <!-- Admins -->
+    <div class="card border-l-4 border-blue-500">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center">
+                <div class="p-3 bg-blue-100 rounded-xl">
+                    <i class="fas fa-user-shield text-blue-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <h3 class="text-sm font-medium text-gray-500">Admins</h3>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-gray-900">
+                {{ $users->where('role', 'admin')->count() }}
+            </p>
+        </div>
+    </div>
 
+    <!-- Staff -->
+    <div class="card border-l-4 border-green-500">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center">
+                <div class="p-3 bg-green-100 rounded-xl">
+                    <i class="fas fa-users-cog text-green-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <h3 class="text-sm font-medium text-gray-500">Staff</h3>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-gray-900">
+                {{ $users->where('role', 'staff')->count() }}
+            </p>
+        </div>
+    </div>
+
+    <!-- Customers -->
+    <div class="card border-l-4 border-purple-500">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center">
+                <div class="p-3 bg-purple-100 rounded-xl">
+                    <i class="fas fa-user-friends text-purple-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <h3 class="text-sm font-medium text-gray-500">Customers</h3>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-gray-900">
+                {{ $users->where('role', 'customer')->count() }}
+            </p>
+        </div>
+    </div>
+
+    <!-- Active Users -->
+    <div class="card border-l-4 border-yellow-500">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center">
+                <div class="p-3 bg-yellow-100 rounded-xl">
+                    <i class="fas fa-user-check text-yellow-600 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <h3 class="text-sm font-medium text-gray-500">Active Users</h3>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-gray-900">
+                {{ $users->where('is_active', true)->count() }}
+            </p>
+        </div>
+    </div>
+</div>
     <!-- Users Table -->
     <div class="card">
         <div class="overflow-x-auto">
@@ -94,26 +163,7 @@
         </div>
     </div>
 
-    <!-- Statistics -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div class="card text-center">
-            <div class="text-2xl font-bold text-blue-600">{{ $users->where('role', 'admin')->count() }}</div>
-            <div class="text-sm text-gray-500">Admins</div>
-        </div>
-        <div class="card text-center">
-            <div class="text-2xl font-bold text-green-600">{{ $users->where('role', 'staff')->count() }}</div>
-            <div class="text-sm text-gray-500">Staff</div>
-        </div>
-        <div class="card text-center">
-            <div class="text-2xl font-bold text-purple-600">{{ $users->where('role', 'customer')->count() }}</div>
-            <div class="text-sm text-gray-500">Customers</div>
-        </div>
-        <div class="card text-center">
-            <div class="text-2xl font-bold text-yellow-600">{{ $users->where('is_active', true)->count() }}</div>
-            <div class="text-sm text-gray-500">Active Users</div>
-        </div>
-    </div>
-</div>
+    
 
 <!-- Add User Modal -->
 <div id="addUserModal" class="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4 hidden">

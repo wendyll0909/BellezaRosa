@@ -7,7 +7,7 @@
 <div class="space-y-6">
     <!-- Header -->
     <div class="flex justify-between items-center">
-        <h1 class="text-3xl font-bold text-gray-900">Payment Management</h1>
+        <h1 class="text-3xl font-bold text-gray-900">Payments</h1>
     </div>
 
         <!-- Payment Statistics -->

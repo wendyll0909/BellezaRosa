@@ -11,27 +11,109 @@
             <i class="fas fa-plus mr-2"></i> New Appointment
         </button>
     </div>
-
-    <!-- Filters -->
-    <div class="card">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div class="flex flex-col md:flex-row gap-4">
-                <input type="text" placeholder="Search appointments..." class="px-4 py-2 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none w-full md:w-64">
-                <select class="px-4 py-2 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none">
-                    <option value="">All Status</option>
-                    <option value="scheduled">Scheduled</option>
-                    <option value="confirmed">Confirmed</option>
-                    <option value="in_progress">In Progress</option>
-                    <option value="completed">Completed</option>
-                    <option value="cancelled">Cancelled</option>
-                </select>
-                <input type="date" class="px-4 py-2 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none">
+<!-- Statistics Cards -->
+<div class="flex flex-col md:flex-row gap-4 md:gap-6">
+    <!-- Total Appointments -->
+    <div class="flex-1 card border-l-4 border-blue-500 min-w-0">
+        <div class="flex items-center justify-between p-4">
+            <div class="flex items-center min-w-0">
+                <div class="p-3 bg-blue-100 rounded-xl mr-3 flex-shrink-0">
+                    <i class="fas fa-calendar-check text-blue-600 text-lg"></i>
+                </div>
+                <div class="min-w-0">
+                    <h3 class="text-sm font-medium text-gray-500 truncate">Total Appointments</h3>
+                </div>
             </div>
-            <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-xl transition">
-                <i class="fas fa-filter mr-2"></i> Filter
-            </button>
+            <p class="text-2xl font-bold text-gray-900 ml-2 flex-shrink-0">
+                {{ $totalAppointments ?? 0 }}
+            </p>
         </div>
     </div>
+
+    <!-- Today's Appointments -->
+    <div class="flex-1 card border-l-4 border-green-500 min-w-0">
+        <div class="flex items-center justify-between p-4">
+            <div class="flex items-center min-w-0">
+                <div class="p-3 bg-green-100 rounded-xl mr-3 flex-shrink-0">
+                    <i class="fas fa-calendar-day text-green-600 text-lg"></i>
+                </div>
+                <div class="min-w-0">
+                    <h3 class="text-sm font-medium text-gray-500 truncate">Today's Appointments</h3>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-gray-900 ml-2 flex-shrink-0">
+                {{ $todayAppointments ?? 0 }}
+            </p>
+        </div>
+    </div>
+
+    <!-- Completed This Month -->
+    <div class="flex-1 card border-l-4 border-red-500 min-w-0">
+        <div class="flex items-center justify-between p-4">
+            <div class="flex items-center min-w-0">
+                <div class="p-3 bg-red-100 rounded-xl mr-3 flex-shrink-0">
+                    <i class="fas fa-check-circle text-red-600 text-lg"></i>
+                </div>
+                <div class="min-w-0">
+                    <h3 class="text-sm font-medium text-gray-500 truncate">Completed (Month)</h3>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-gray-900 ml-2 flex-shrink-0">
+                {{ $completedThisMonth ?? 0 }}
+            </p>
+        </div>
+    </div>
+</div>
+    <!-- Filters -->
+<div class="card">
+    <form action="{{ route('dashboard.appointments.index') }}" method="GET" class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div class="flex flex-col md:flex-row gap-4 flex-1">
+            <!-- Search Input -->
+            <input 
+                type="text" 
+                name="search" 
+                value="{{ request('search') }}"
+                placeholder="Search by name, phone, or service..." 
+                class="px-4 py-2 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none w-full md:w-64">
+            
+            <!-- Status Filter -->
+            <select 
+                name="status" 
+                class="px-4 py-2 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none">
+                <option value="">All Status</option>
+                <option value="scheduled" {{ request('status') == 'scheduled' ? 'selected' : '' }}>Scheduled</option>
+                <option value="confirmed" {{ request('status') == 'confirmed' ? 'selected' : '' }}>Confirmed</option>
+                <option value="in_progress" {{ request('status') == 'in_progress' ? 'selected' : '' }}>In Progress</option>
+                <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
+                <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+            </select>
+            
+            <!-- Date Filter -->
+            <input 
+                type="date" 
+                name="date" 
+                value="{{ request('date') }}"
+                class="px-4 py-2 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none">
+        </div>
+        
+        <!-- Filter and Clear Buttons -->
+        <div class="flex gap-2">
+            <button 
+                type="submit" 
+                class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-xl transition">
+                <i class="fas fa-filter mr-2"></i> Apply Filters
+            </button>
+            
+            @if(request()->hasAny(['search', 'status', 'date']))
+            <a 
+                href="{{ route('dashboard.appointments.index') }}" 
+                class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-xl transition">
+                <i class="fas fa-times mr-2"></i> Clear
+            </a>
+            @endif
+        </div>
+    </form>
+</div>
 
     <!-- Appointments Table -->
     <div class="card">
@@ -185,10 +267,26 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label class="block text-gray-700 font-semibold mb-2">Date & Time</label>
-                        <input type="datetime-local" name="start_datetime" required min="{{ now()->format('Y-m-d\TH:i') }}" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none">
-                    </div>
+                    <!-- Date & Time Input -->
+<div class="form-group">
+    <label class="block text-gray-700 font-semibold mb-2">Date & Time</label>
+    <input 
+        type="datetime-local" 
+        name="start_datetime" 
+        required 
+        min="{{ now()->format('Y-m-d\T') . substr($openingTime, 0, 5) }}"
+        max="{{ now()->addDays($maxDaysAhead)->format('Y-m-d\T') . substr($closingTime, 0, 5) }}"
+        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none appointment-time"
+        step="{{ $slotInterval * 60 }}"
+        onchange="validateAppointmentTime(this)"
+    >
+    <p class="text-sm text-gray-500 mt-1">
+        Business hours: {{ \Carbon\Carbon::createFromFormat('H:i:s', $openingTime)->format('g:i A') }} - {{ \Carbon\Carbon::createFromFormat('H:i:s', $closingTime)->format('g:i A') }}
+    </p>
+    <p class="text-xs text-red-600 mt-1 hidden" id="timeError">
+        Please select a time within business hours.
+    </p>
+</div>
                 </div>
                 <div class="mt-6 flex justify-end space-x-4">
                     <button type="button" onclick="closeModal('bookingModal')" class="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition">
@@ -204,10 +302,123 @@
 </div>
 
 <script>
-function openBookingModal() {
-    document.getElementById('bookingModal').classList.remove('hidden');
+// Function to validate appointment time
+function validateAppointmentTime(input) {
+    if (!input.value) return true;
+    
+    const selectedDateTime = new Date(input.value);
+    const selectedTime = selectedDateTime.toTimeString().split(' ')[0].substring(0, 5); // HH:mm format
+    
+    // Parse business hours (passed from PHP)
+    const openingTime = '{{ substr($openingTime, 0, 5) }}'; // e.g., "09:00"
+    const closingTime = '{{ substr($closingTime, 0, 5) }}'; // e.g., "20:00"
+    
+    const errorElement = document.getElementById('timeError');
+    
+    // Check if selected time is within business hours
+    if (selectedTime < openingTime || selectedTime > closingTime) {
+        errorElement.textContent = `Please select a time within business hours (${openingTime} - ${closingTime})`;
+        errorElement.classList.remove('hidden');
+        input.classList.add('border-red-500');
+        input.classList.remove('border-gray-300');
+        return false;
+    } else {
+        errorElement.classList.add('hidden');
+        input.classList.remove('border-red-500');
+        input.classList.add('border-gray-300');
+        return true;
+    }
 }
 
+// Enhanced openBookingModal function with time constraints
+function openBookingModal() {
+    const modal = document.getElementById('bookingModal');
+    modal.classList.remove('hidden');
+    
+    // Get current date/time
+    const now = new Date();
+    const today = now.toISOString().split('T')[0];
+    const currentTime = now.toTimeString().split(' ')[0].substring(0, 5); // HH:mm
+    
+    // Salon settings from PHP
+    const openingTime = '{{ substr($openingTime, 0, 5) }}';
+    const closingTime = '{{ substr($closingTime, 0, 5) }}';
+    const maxDaysAhead = {{ $maxDaysAhead }};
+    const slotInterval = {{ $slotInterval }};
+    
+    // Calculate max date
+    const maxDate = new Date(now);
+    maxDate.setDate(maxDate.getDate() + maxDaysAhead);
+    const maxDateStr = maxDate.toISOString().split('T')[0];
+    
+    // Set min time: if current time is before opening, use opening time
+    let minTime = openingTime;
+    if (currentTime > openingTime && currentTime < closingTime) {
+        // Round current time to nearest slot interval
+        const [currentHour, currentMinute] = currentTime.split(':').map(Number);
+        const roundedMinutes = Math.ceil(currentMinute / slotInterval) * slotInterval;
+        
+        let roundedHour = currentHour;
+        let roundedMin = roundedMinutes;
+        
+        if (roundedMinutes >= 60) {
+            roundedHour = currentHour + 1;
+            roundedMin = 0;
+        }
+        
+        minTime = `${roundedHour.toString().padStart(2, '0')}:${roundedMin.toString().padStart(2, '0')}`;
+    }
+    
+    // If minTime is after closing time, set to next day's opening
+    if (minTime >= closingTime) {
+        // Move to next day
+        const tomorrow = new Date(now);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const tomorrowStr = tomorrow.toISOString().split('T')[0];
+        minTime = openingTime;
+        
+        // Update all datetime inputs in the modal
+        const dateTimeInputs = document.querySelectorAll('.appointment-time');
+        dateTimeInputs.forEach(input => {
+            input.min = `${tomorrowStr}T${minTime}`;
+            input.max = `${maxDateStr}T${closingTime}`;
+            input.step = slotInterval * 60; // Convert minutes to seconds
+        });
+    } else {
+        // Update all datetime inputs in the modal
+        const dateTimeInputs = document.querySelectorAll('.appointment-time');
+        dateTimeInputs.forEach(input => {
+            input.min = `${today}T${minTime}`;
+            input.max = `${maxDateStr}T${closingTime}`;
+            input.step = slotInterval * 60; // Convert minutes to seconds
+        });
+    }
+    
+    // Clear any previous errors
+    const errorElement = document.getElementById('timeError');
+    if (errorElement) {
+        errorElement.classList.add('hidden');
+    }
+}
+
+// Override form submission to validate time
+document.addEventListener('DOMContentLoaded', function() {
+    const appointmentForm = document.querySelector('form[action="{{ route("dashboard.appointments.store") }}"]');
+    if (appointmentForm) {
+        appointmentForm.addEventListener('submit', function(e) {
+            const dateTimeInput = document.querySelector('.appointment-time');
+            if (dateTimeInput && !validateAppointmentTime(dateTimeInput)) {
+                e.preventDefault();
+                const openingTime = '{{ substr($openingTime, 0, 5) }}';
+                const closingTime = '{{ substr($closingTime, 0, 5) }}';
+                alert(`Please select a time within business hours: ${openingTime} - ${closingTime}`);
+                dateTimeInput.focus();
+            }
+        });
+    }
+});
+
+// Keep your existing closeModal and window.onclick functions
 function closeModal(modalId) {
     document.getElementById(modalId).classList.add('hidden');
 }

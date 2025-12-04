@@ -6,7 +6,7 @@
 <div class="space-y-6">
     <!-- Header -->
     <div class="flex justify-between items-center">
-        <h1 class="text-3xl font-bold text-gray-900">Services Management</h1>
+        <h1 class="text-3xl font-bold text-gray-900">Services</h1>
         <button onclick="openAddServiceModal()" class="bg-yellow-500 hover:bg-yellow-400 text-blue-900 font-bold py-3 px-6 rounded-xl shadow-lg transform hover:-translate-y-1 transition">
             <i class="fas fa-plus mr-2"></i> Add Service
         </button>

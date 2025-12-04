@@ -1,3 +1,12 @@
+@php
+    // Fetch salon settings in the partial itself
+    $salonSettings = \App\Models\SalonSetting::getSettings();
+    $openingTime = $salonSettings->opening_time;
+    $closingTime = $salonSettings->closing_time;
+    $maxDaysAhead = $salonSettings->max_days_book_ahead;
+    $slotInterval = $salonSettings->slot_interval_minutes;
+@endphp
+
 <!-- Booking Modal -->
 <div id="bookingModal" class="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-screen overflow-y-auto">
@@ -10,7 +19,7 @@
             </div>
         </div>
         <div class="p-6">
-            <form action="{{ route('dashboard.appointments.store') }}" method="POST">
+            <form action="{{ route('dashboard.appointments.store') }}" method="POST" id="bookingForm">
                 @csrf
                 <div class="grid md:grid-cols-2 gap-4">
                     <div class="form-group">
@@ -42,7 +51,20 @@
                     </div>
                     <div class="form-group">
                         <label class="block text-gray-700 font-semibold mb-2">Date & Time</label>
-                        <input type="datetime-local" name="start_datetime" required min="{{ now()->format('Y-m-d\TH:i') }}" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none">
+                        <input 
+                            type="datetime-local" 
+                            name="start_datetime" 
+                            required 
+                            id="appointmentDateTime"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none appointment-time"
+                            onchange="validateAppointmentTime(this)"
+                        >
+                        <p class="text-sm text-gray-500 mt-1" id="businessHoursText">
+                            Business hours: {{ date('g:i A', strtotime($openingTime)) }} - {{ date('g:i A', strtotime($closingTime)) }}
+                            </p>
+                        <p class="text-xs text-red-600 mt-1 hidden" id="timeError">
+                            Please select a time within business hours.
+                        </p>
                     </div>
                 </div>
                 <div class="mt-6 flex justify-end space-x-4">
@@ -57,3 +79,123 @@
         </div>
     </div>
 </div>
+
+<script>
+// Function to validate appointment time
+function validateAppointmentTime(input) {
+    if (!input.value) return true;
+    
+    const selectedDateTime = new Date(input.value);
+    const selectedTime = selectedDateTime.toTimeString().split(' ')[0].substring(0, 5); // HH:mm format
+    
+    // Parse business hours
+    const openingTime = '{{ substr($openingTime, 0, 5) }}'; // e.g., "09:00"
+    const closingTime = '{{ substr($closingTime, 0, 5) }}'; // e.g., "20:00"
+    
+    const errorElement = document.getElementById('timeError');
+    if (!errorElement) return true;
+    
+    // Check if selected time is within business hours
+    if (selectedTime < openingTime || selectedTime > closingTime) {
+        errorElement.textContent = `Please select a time within business hours (${openingTime} - ${closingTime})`;
+        errorElement.classList.remove('hidden');
+        input.classList.add('border-red-500');
+        input.classList.remove('border-gray-300');
+        return false;
+    } else {
+        errorElement.classList.add('hidden');
+        input.classList.remove('border-red-500');
+        input.classList.add('border-gray-300');
+        return true;
+    }
+}
+
+// Enhanced openBookingModal function with time constraints
+function openBookingModal() {
+    const modal = document.getElementById('bookingModal');
+    modal.classList.remove('hidden');
+    
+    // Get current date/time
+    const now = new Date();
+    const today = now.toISOString().split('T')[0];
+    const currentTime = now.toTimeString().split(' ')[0].substring(0, 5); // HH:mm
+    
+    // Salon settings
+    const openingTime = '{{ substr($openingTime, 0, 5) }}';
+    const closingTime = '{{ substr($closingTime, 0, 5) }}';
+    const maxDaysAhead = {{ $maxDaysAhead }};
+    const slotInterval = {{ $slotInterval }};
+    
+    // Calculate max date
+    const maxDate = new Date(now);
+    maxDate.setDate(maxDate.getDate() + maxDaysAhead);
+    const maxDateStr = maxDate.toISOString().split('T')[0];
+    
+    // Set min time
+    let minTime = openingTime;
+    let minDate = today;
+    
+    if (currentTime > openingTime && currentTime < closingTime) {
+        const [currentHour, currentMinute] = currentTime.split(':').map(Number);
+        const roundedMinutes = Math.ceil(currentMinute / slotInterval) * slotInterval;
+        
+        let roundedHour = currentHour;
+        let roundedMin = roundedMinutes;
+        
+        if (roundedMinutes >= 60) {
+            roundedHour = currentHour + 1;
+            roundedMin = 0;
+        }
+        
+        minTime = `${roundedHour.toString().padStart(2, '0')}:${roundedMin.toString().padStart(2, '0')}`;
+        
+        if (minTime >= closingTime) {
+            const tomorrow = new Date(now);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            minDate = tomorrow.toISOString().split('T')[0];
+            minTime = openingTime;
+        }
+    }
+    
+    // Update the datetime input
+    const dateTimeInput = document.getElementById('appointmentDateTime');
+    if (dateTimeInput) {
+        dateTimeInput.min = `${minDate}T${minTime}`;
+        dateTimeInput.max = `${maxDateStr}T${closingTime}`;
+        dateTimeInput.step = slotInterval * 60;
+        dateTimeInput.value = '';
+    }
+    
+    // Clear errors
+    const errorElement = document.getElementById('timeError');
+    if (errorElement) {
+        errorElement.classList.add('hidden');
+    }
+    
+    if (dateTimeInput) {
+        dateTimeInput.classList.remove('border-red-500');
+        dateTimeInput.classList.add('border-gray-300');
+    }
+}
+
+// Form submission validation
+document.addEventListener('DOMContentLoaded', function() {
+    const bookingForm = document.getElementById('bookingForm');
+    if (bookingForm) {
+        bookingForm.addEventListener('submit', function(e) {
+            const dateTimeInput = document.getElementById('appointmentDateTime');
+            if (dateTimeInput && !validateAppointmentTime(dateTimeInput)) {
+                e.preventDefault();
+                const openingTime = '{{ substr($openingTime, 0, 5) }}';
+                const closingTime = '{{ substr($closingTime, 0, 5) }}';
+                alert(`Please select a time within business hours: ${openingTime} - ${closingTime}`);
+                dateTimeInput.focus();
+            }
+        });
+    }
+});
+
+function closeModal(modalId) {
+    document.getElementById(modalId).classList.add('hidden');
+}
+</script>

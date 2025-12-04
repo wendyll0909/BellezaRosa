@@ -41,6 +41,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('appointments/{appointment}/status', [AppointmentController::class, 'updateStatus'])
             ->name('appointments.status');
 
+ 
         // Services
         Route::resource('services', ServiceController::class);
         
