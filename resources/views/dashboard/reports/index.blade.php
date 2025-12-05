@@ -56,8 +56,8 @@
         <div class="card cursor-pointer hover:shadow-xl transition-all duration-300"
              onclick="location.href='{{ route('dashboard.reports.inventory') }}'">
             <div class="flex items-center">
-                <div class="bg-gray-100 p-4 rounded-xl mr-4">
-                    <i class="fas fa-boxes text-gray-600 text-2xl"></i>
+                <div class="bg-purple-100 p-4 rounded-xl mr-4">
+                    <i class="fas fa-boxes text-purple-600 text-2xl"></i>
                 </div>
                 <div>
                     <h3 class="text-lg font-semibold text-gray-800">Inventory Reports</h3>
