@@ -7,7 +7,8 @@ use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\PaymentController;        // ← ONLY THIS LINE ADDED
-use App\Http\Controllers\InventoryController; // ← ADD THIS LINE
+use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\ReportsController; // ← ADD THIS LINE
 use Illuminate\Support\Facades\Route;
 
 // Guest Routes
@@ -41,7 +42,14 @@ Route::middleware(['auth'])->group(function () {
         Route::post('appointments/{appointment}/status', [AppointmentController::class, 'updateStatus'])
             ->name('appointments.status');
 
- 
+// Reports Routes - make sure this is inside your dashboard group
+Route::prefix('reports')->name('reports.')->group(function () {
+    Route::get('/', [ReportsController::class, 'index'])->name('index');
+    Route::get('/appointments', [ReportsController::class, 'appointments'])->name('appointments');
+    Route::get('/revenue', [ReportsController::class, 'revenue'])->name('revenue');
+    Route::get('/inventory', [ReportsController::class, 'inventory'])->name('inventory');
+    Route::post('/download', [ReportsController::class, 'download'])->name('download');
+});
         // Services
         Route::resource('services', ServiceController::class);
         

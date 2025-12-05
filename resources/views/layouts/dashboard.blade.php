@@ -99,6 +99,9 @@
             <i class="fas fa-users-cog mr-3"></i> Manage Users
         </div>
     @endif
+    <div class="nav-item {{ request()->is('dashboard/reports*') ? 'active' : '' }}" onclick="location.href='{{ route('dashboard.reports.index') }}'">
+    <i class="fas fa-chart-bar mr-3"></i> Reports
+</div>
     <div class="nav-item mt-auto" onclick="document.getElementById('logout-form').submit()">
         <i class="fas fa-sign-out-alt mr-3"></i> Logout
     </div>
