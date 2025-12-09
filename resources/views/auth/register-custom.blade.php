@@ -266,10 +266,14 @@
         <!-- Brand Section -->
         <div class="brand-section">
             <div class="brand-content">
-                <div class="logo">
+                <a href="{{ route('landing') }}" class="logo-link">
+
+                    <div class="logo">
                     <img src="{{ asset('images/logo.png') }}" alt="Belleza Rosa Logo" style="height: 28px; margin-right: 10px;">
                     <span>Belleza Rosa</span>
-                </div>
+                    </div>
+                </a>
+                
                 <h1>Join Our Salon</h1>
                 <p>Create your account to access premium salon management features and streamline your business operations.</p>
 

@@ -264,10 +264,13 @@ padding: 14px 14px 14px 45px;  /* ← Change this line */
         <!-- Brand Section -->
         <div class="brand-section">
             <div class="brand-content">
-                <div class="logo">
-                    <img src="{{ asset('images/logo.png') }}" alt="Belleza Rosa Logo" style="height: 28px; margin-right: 10px;">
-                    <span>Belleza Rosa</span>
-                </div>
+<!-- Change this in your login page -->
+<a href="{{ route('landing') }}" class="logo-link">
+    <div class="logo">
+        <img src="{{ asset('images/logo.png') }}" alt="Belleza Rosa Logo" style="height: 28px; margin-right: 10px;">
+        <span>Belleza Rosa</span>
+    </div>
+</a>
                 <h1>Welcome Back</h1>
                 <p>Access your salon management dashboard to streamline appointments, customer management, and business operations.</p>
 

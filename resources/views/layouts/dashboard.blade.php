@@ -102,9 +102,9 @@
     <div class="nav-item {{ request()->is('dashboard/reports*') ? 'active' : '' }}" onclick="location.href='{{ route('dashboard.reports.index') }}'">
     <i class="fas fa-chart-bar mr-3"></i> Reports
 </div>
-    <div class="nav-item mt-auto" onclick="document.getElementById('logout-form').submit()">
-        <i class="fas fa-sign-out-alt mr-3"></i> Logout
-    </div>
+    <div class="nav-item mt-auto cursor-pointer" onclick="confirmLogout()">
+    <i class="fas fa-sign-out-alt mr-3"></i> Logout
+</div>
 </nav>
     </aside>
 
@@ -117,4 +117,24 @@
         @csrf
     </form>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+async function confirmLogout() {
+    const result = await Swal.fire({
+        title: 'Logout?',
+        text: 'Are you sure you want to logout from your account?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#1E40AF',
+        cancelButtonColor: '#6B7280',
+        confirmButtonText: 'Yes, logout',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true
+    });
+
+    if (result.isConfirmed) {
+        document.getElementById('logout-form').submit();
+    }
+}
+</script>
 </html>

@@ -51,13 +51,16 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // 4. Run the individual seeders
+        // 4. Run the individual seeders (UPDATED - PaymentSeeder added)
         $this->call([
             ServiceCategorySeeder::class,
             CustomerSeeder::class,
             ServiceSeeder::class,
             AppointmentSeeder::class,
             AppointmentAddonSeeder::class,
+            PaymentSeeder::class, // ← ADD THIS LINE
+            InventorySeeder::class,    // Add this line
+
         ]);
     }
 }
