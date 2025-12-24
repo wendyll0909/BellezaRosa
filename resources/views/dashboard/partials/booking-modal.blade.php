@@ -31,24 +31,46 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label class="block text-gray-700 font-semibold mb-2">Service</label>
-                        <select name="service_id" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none">
-                            <option value="">Select Service</option>
-                            @foreach($services ?? [] as $service)
-                                <option value="{{ $service->id }}">{{ $service->name }} - ₱{{ number_format($service->price_regular) }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+
                     <div class="form-group">
                         <label class="block text-gray-700 font-semibold mb-2">Staff</label>
-                        <select name="staff_id" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none">
+                        <select name="staff_id" required 
+                                onchange="filterServicesByStaff(this)"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none">
                             <option value="">Select Staff</option>
                             @foreach($staff ?? [] as $staffMember)
-                                <option value="{{ $staffMember->id }}">{{ $staffMember->user->full_name }} ({{ ucfirst($staffMember->specialty) }})</option>
+                                <option value="{{ $staffMember->id }}" 
+                                        data-specialty="{{ $staffMember->specialty }}">
+                                    {{ $staffMember->user->full_name }} ({{ ucfirst($staffMember->specialty) }})
+                                </option>
                             @endforeach
                         </select>
                     </div>
+
+                    <div class="form-group">
+                        <label class="block text-gray-700 font-semibold mb-2">Service</label>
+                        <select name="service_id" required 
+                                id="serviceSelect"
+                                onchange="updateServiceDuration(this)"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none">
+                            <option value="">Select Service</option>
+                            @foreach($services ?? [] as $service)
+                                <option value="{{ $service->id }}" 
+                                        data-category="{{ $service->category->specialty }}"
+                                        data-duration="{{ $service->duration_minutes }}"
+                                        data-price="{{ $service->price_regular }}">
+                                    {{ $service->name }} - ₱{{ number_format($service->price_regular) }} ({{ $service->duration_minutes }} mins)
+                                </option>
+                            @endforeach
+                        </select>
+                        <p class="text-sm text-gray-500 mt-1" id="serviceFilterInfo">
+                            Select a staff member first to see available services
+                        </p>
+                        <p class="text-sm text-gray-500 mt-1" id="durationInfo">
+                            Minimum appointment duration: 30 minutes
+                        </p>
+                    </div>
+
                     <div class="form-group">
                         <label class="block text-gray-700 font-semibold mb-2">Date & Time</label>
                         <input 
@@ -61,12 +83,13 @@
                         >
                         <p class="text-sm text-gray-500 mt-1" id="businessHoursText">
                             Business hours: {{ date('g:i A', strtotime($openingTime)) }} - {{ date('g:i A', strtotime($closingTime)) }}
-                            </p>
+                        </p>
                         <p class="text-xs text-red-600 mt-1 hidden" id="timeError">
                             Please select a time within business hours.
                         </p>
                     </div>
                 </div>
+
                 <div class="mt-6 flex justify-end space-x-4">
                     <button type="button" onclick="closeModal('bookingModal')" class="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition">
                         Cancel
@@ -81,6 +104,90 @@
 </div>
 
 <script>
+// Filter services based on selected staff specialty
+function filterServicesByStaff(staffSelect) {
+    const serviceSelect = document.getElementById('serviceSelect');
+    const serviceFilterInfo = document.getElementById('serviceFilterInfo');
+    
+    if (!staffSelect.value) {
+        // Reset to all services
+        Array.from(serviceSelect.options).forEach(option => {
+            option.style.display = '';
+        });
+        serviceFilterInfo.textContent = 'All services shown';
+        return;
+    }
+    
+    const selectedStaff = staffSelect.options[staffSelect.selectedIndex];
+    const staffSpecialty = selectedStaff.getAttribute('data-specialty');
+    
+    // Hide/show services based on category specialty
+    let availableCount = 0;
+    Array.from(serviceSelect.options).forEach(option => {
+        if (option.value === '') {
+            option.style.display = ''; // Keep the placeholder
+            return;
+        }
+        
+        const categorySpecialty = option.getAttribute('data-category');
+        const matches = categorySpecialty === staffSpecialty || 
+                       categorySpecialty === 'both' || 
+                       staffSpecialty === 'both';
+        
+        if (matches) {
+            option.style.display = '';
+            availableCount++;
+        } else {
+            option.style.display = 'none';
+        }
+    });
+    
+    // Update info message
+    if (availableCount > 0) {
+        serviceFilterInfo.textContent = `${availableCount} ${staffSpecialty} services available`;
+        serviceFilterInfo.classList.remove('text-red-600');
+        serviceFilterInfo.classList.add('text-green-600');
+    } else {
+        serviceFilterInfo.textContent = `No ${staffSpecialty} services available for this staff`;
+        serviceFilterInfo.classList.remove('text-green-600');
+        serviceFilterInfo.classList.add('text-red-600');
+        serviceSelect.value = '';
+    }
+}
+
+// Call on page load if staff is already selected
+document.addEventListener('DOMContentLoaded', function() {
+    const staffSelect = document.querySelector('select[name="staff_id"]');
+    if (staffSelect && staffSelect.value) {
+        filterServicesByStaff(staffSelect);
+    }
+});
+
+// Update duration info when service is selected
+function updateServiceDuration(select) {
+    const durationInfo = document.getElementById('durationInfo');
+    if (!durationInfo) return;
+
+    if (select.value) {
+        const selectedOption = select.options[select.selectedIndex];
+        const duration = selectedOption.getAttribute('data-duration');
+        durationInfo.textContent = `Service duration: ${duration} minutes (minimum: 30 minutes)`;
+        
+        // Highlight if duration is less than 30 minutes
+        if (parseInt(duration) < 30) {
+            durationInfo.classList.remove('text-gray-500');
+            durationInfo.classList.add('text-red-600', 'font-semibold');
+        } else {
+            durationInfo.classList.remove('text-red-600', 'font-semibold');
+            durationInfo.classList.add('text-gray-500');
+        }
+    } else {
+        durationInfo.textContent = 'Minimum appointment duration: 30 minutes';
+        durationInfo.classList.remove('text-red-600', 'font-semibold');
+        durationInfo.classList.add('text-gray-500');
+    }
+}
+
 // Function to validate appointment time
 function validateAppointmentTime(input) {
     if (!input.value) return true;
@@ -115,6 +222,9 @@ function openBookingModal() {
     const modal = document.getElementById('bookingModal');
     modal.classList.remove('hidden');
     
+    // Reset duration info
+    updateServiceDuration(document.querySelector('select[name="service_id"]'));
+
     // Get current date/time
     const now = new Date();
     const today = now.toISOString().split('T')[0];

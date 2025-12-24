@@ -33,6 +33,39 @@ class User extends Authenticatable
             'is_active' => 'boolean',
         ];
     }
+    // Add these methods to the User model
+public function sentMessages()
+{
+    return $this->hasMany(Message::class, 'sender_id');
+}
+
+public function receivedMessages()
+{
+    return $this->hasMany(Message::class, 'receiver_id');
+}
+
+public function notifications()
+{
+    return $this->hasMany(Notification::class);
+}
+
+// Get unread messages count
+public function getUnreadMessagesCountAttribute()
+{
+    return $this->receivedMessages()->unread()->count();
+}
+
+// Get unread notifications count
+public function getUnreadNotificationsCountAttribute()
+{
+    return $this->notifications()->unread()->count();
+}
+
+// Get total unread count
+public function getTotalUnreadCountAttribute()
+{
+    return $this->unread_messages_count + $this->unread_notifications_count;
+}
 
     // Your existing relationships and methods...
     public function staff()

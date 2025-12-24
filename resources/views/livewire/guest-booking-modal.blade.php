@@ -34,39 +34,57 @@
                                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none">
                             </div>
 
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Service <span class="text-red-500">*</span></label>
+                            <!-- Service Field (moved above Staff) -->
+                            <div class="form-group">
+                                <label class="block text-gray-700 font-semibold mb-2">Service *</label>
                                 <select wire:model="selectedService" required
                                         class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none">
-                                    <option value="">Choose Service</option>
-                                    @foreach($services as $s)
-                                        <option value="{{ $s->id }}">{{ $s->name }} ({{ $s->duration_minutes }} mins • ₱{{ number_format($s->price_regular) }})</option>
+                                    <option value="">Select Service</option>
+                                    @foreach($services as $service)
+                                        <option value="{{ $service->id }}">
+                                            {{ $service->name }} - ₱{{ number_format($service->price_regular) }} ({{ $service->duration_minutes }} mins)
+                                        </option>
                                     @endforeach
                                 </select>
-                                @error('selectedService') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                                @error('selectedService') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                                <p class="text-sm text-gray-500 mt-1" id="serviceInfo">
+                                    @if($selectedStaff)
+                                        @php
+                                            $staff = \App\Models\Staff::find($selectedStaff);
+                                            $specialty = $staff ? $staff->specialty : '';
+                                        @endphp
+                                        Showing {{ $specialty }} services for selected staff
+                                    @else
+                                        Select a staff member to see available services
+                                    @endif
+                                </p>
                             </div>
 
-                            <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Preferred Staff <span class="text-red-500">*</span></label>
-                                <select wire:model="selectedStaff" wire:change="generateAvailableTimes" required
+                            <!-- Staff Field -->
+                            <div class="form-group">
+                                <label class="block text-gray-700 font-semibold mb-2">Staff *</label>
+                                <select wire:model="selectedStaff" required
+                                        wire:change="updatedSelectedStaff"
                                         class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none">
-                                    <option value="">Any Available</option>
-                                    @foreach($staff as $st)
-                                        <option value="{{ $st->id }}">{{ $st->user->full_name }} ({{ ucfirst($st->specialty) }})</option>
+                                    <option value="">Select Staff</option>
+                                    @foreach($staff as $staffMember)
+                                        <option value="{{ $staffMember->id }}">
+                                            {{ $staffMember->user->full_name }} ({{ ucfirst($staffMember->specialty) }})
+                                        </option>
                                     @endforeach
                                 </select>
-                                @error('selectedStaff') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                                @error('selectedStaff') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                             </div>
 
                             <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Date <span class="text-red-500">*</span></label>
+                                <label class="block text-gray-700 font-semibold mb-2">Date *</label>
                                 <input type="date" wire:model="date" wire:change="generateAvailableTimes" min="{{ now()->format('Y-m-d') }}" required
                                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none">
                                 @error('date') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </div>
 
                             <div>
-                                <label class="block text-gray-700 font-semibold mb-2">Time <span class="text-red-500">*</span></label>
+                                <label class="block text-gray-700 font-semibold mb-2">Time *</label>
                                 <select wire:model="time" required
                                         class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none"
                                         {{ empty($availableTimes) ? 'disabled' : '' }}>

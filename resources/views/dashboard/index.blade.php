@@ -9,25 +9,39 @@
     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <h1 class="text-3xl font-bold text-gray-900">Dashboard Overview</h1>
         <div class="flex flex-col sm:flex-row gap-3 items-end">
-    <div class="flex-1">
-        <select id="dateFilter" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none">
-            <option value="today">Today</option>
-            <option value="this_week">This Week</option>
-            <option value="this_month">This Month</option>
-            <option value="custom">Custom Range</option>
-        </select>
-    </div>
+            <div class="flex-1">
+                <select id="dateFilter" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none">
+                    <option value="today" {{ $currentFilter == 'today' ? 'selected' : '' }}>Today</option>
+                    <option value="yesterday" {{ $currentFilter == 'yesterday' ? 'selected' : '' }}>Yesterday</option>
+                    <option value="this_week" {{ $currentFilter == 'this_week' ? 'selected' : '' }}>This Week</option>
+                    <option value="last_week" {{ $currentFilter == 'last_week' ? 'selected' : '' }}>Last Week</option>
+                    <option value="this_month" {{ $currentFilter == 'this_month' ? 'selected' : '' }}>This Month</option>
+                    <option value="last_month" {{ $currentFilter == 'last_month' ? 'selected' : '' }}>Last Month</option>
+                    <option value="custom" {{ $currentFilter == 'custom' ? 'selected' : '' }}>Specific Month</option>
+                    <option value="custom_range" {{ $currentFilter == 'custom_range' ? 'selected' : '' }}>Custom Range</option>
+                </select>
+            </div>
 
-    <!-- Custom Month Picker (hidden by default) -->
-    <div id="customDateRange" class="hidden gap-2">
-        <input type="month" id="customMonth" class="px-4 py-2 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none">
-    </div>
+            <!-- Custom Month Picker -->
+            <div id="customDateRange" class="hidden gap-2">
+                <input type="month" id="customMonth" value="{{ $currentCustomDate }}" class="px-4 py-2 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none">
+            </div>
 
-    <!-- Apply Button (always visible) -->
-    <button id="applyFilterBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl transition font-medium whitespace-nowrap">
-        Apply Filter
-    </button>
-</div>
+            <!-- Custom Date Range Picker -->
+            <div id="customDateRangePicker" class="hidden gap-2 flex-col sm:flex-row">
+                <div class="flex gap-2">
+                    <input type="date" id="dateFrom" value="{{ $dateFrom }}" class="px-4 py-2 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none">
+                    <span class="flex items-center">to</span>
+                    <input type="date" id="dateTo" value="{{ $dateTo }}" class="px-4 py-2 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none">
+                </div>
+                <p class="text-xs text-gray-500">Select start and end dates</p>
+            </div>
+
+            <!-- Apply Button -->
+            <button id="applyFilterBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl transition font-medium whitespace-nowrap">
+                Apply Filter
+            </button>
+        </div>
     </div>
 
     <!-- Statistics Cards -->
@@ -265,6 +279,7 @@
 document.getElementById('applyFilterBtn').addEventListener('click', function() {
     const filter = document.getElementById('dateFilter').value;
     const customRange = document.getElementById('customDateRange');
+    const customRangePicker = document.getElementById('customDateRangePicker');
     
     if (filter === 'custom') {
         if (customRange.classList.contains('hidden')) {
@@ -272,6 +287,12 @@ document.getElementById('applyFilterBtn').addEventListener('click', function() {
             return;
         }
         applyCustomDate();
+    } else if (filter === 'custom_range') {
+        if (customRangePicker.classList.contains('hidden')) {
+            showToast('Please select date range first', 'error');
+            return;
+        }
+        applyCustomDateRange();
     } else {
         applyDateFilter(filter);
     }
@@ -279,13 +300,68 @@ document.getElementById('applyFilterBtn').addEventListener('click', function() {
 
 document.getElementById('dateFilter').addEventListener('change', function() {
     const customRange = document.getElementById('customDateRange');
+    const customRangePicker = document.getElementById('customDateRangePicker');
+    
+    customRange.classList.add('hidden');
+    customRangePicker.classList.add('hidden');
+    
     if (this.value === 'custom') {
         customRange.classList.remove('hidden');
-    } else {
-        customRange.classList.add('hidden');
+    } else if (this.value === 'custom_range') {
+        customRangePicker.classList.remove('hidden');
+        
+        // Set default dates (last 7 days)
+        const today = new Date().toISOString().split('T')[0];
+        const lastWeek = new Date();
+        lastWeek.setDate(lastWeek.getDate() - 7);
+        const lastWeekStr = lastWeek.toISOString().split('T')[0];
+        
+        document.getElementById('dateFrom').value = lastWeekStr;
+        document.getElementById('dateTo').value = today;
     }
 });
-
+function applyCustomDateRange() {
+    const dateFrom = document.getElementById('dateFrom').value;
+    const dateTo = document.getElementById('dateTo').value;
+    
+    if (dateFrom && dateTo) {
+        if (new Date(dateFrom) > new Date(dateTo)) {
+            showToast('Start date cannot be after end date', 'error');
+            return;
+        }
+        
+        showLoading();
+        
+        fetch('{{ route("dashboard.filter") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+                date_range: 'custom_range',
+                date_from: dateFrom,
+                date_to: dateTo
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                updateDashboard(data);
+                showToast(`Custom range applied: ${dateFrom} to ${dateTo}`);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('Error applying filter', 'error');
+        })
+        .finally(() => {
+            hideLoading();
+        });
+    } else {
+        showToast('Please select both start and end dates', 'error');
+    }
+}
 function applyDateFilter(filter) {
     showLoading();
     
@@ -624,10 +700,19 @@ function showToast(message, type = 'success') {
 document.addEventListener('DOMContentLoaded', function() {
     const dateFilter = document.getElementById('dateFilter');
     const customRange = document.getElementById('customDateRange');
+    const customRangePicker = document.getElementById('customDateRangePicker');
     
+    // Show appropriate fields based on current filter
     if (dateFilter.value === 'custom') {
         customRange.classList.remove('hidden');
+    } else if (dateFilter.value === 'custom_range') {
+        customRangePicker.classList.remove('hidden');
     }
+    
+    // Set max date to today for date pickers
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('dateTo').max = today;
+    document.getElementById('dateFrom').max = today;
 });
 
 // Close modal when clicking outside or ESC key

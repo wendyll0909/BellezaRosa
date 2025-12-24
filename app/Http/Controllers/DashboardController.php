@@ -23,9 +23,11 @@ class DashboardController extends Controller
     // Get date range from request or use default (today)
     $dateRange = $request->get('date_range', 'today');
     $customDate = $request->get('custom_date');
+    $dateFrom = $request->get('date_from');
+    $dateTo = $request->get('date_to');
     
     // Calculate date range
-    $dateRangeData = $this->getDateRange($dateRange, $customDate);
+    $dateRangeData = $this->getDateRange($dateRange, $customDate, $dateFrom, $dateTo);
 
     // Get dashboard statistics based on date range
     $stats = $this->getDashboardStats($dateRangeData['start'], $dateRangeData['end'], $dateRangeData['label']);
@@ -54,11 +56,11 @@ class DashboardController extends Controller
         ->orderBy('count', 'desc')
         ->first();
 
-    // **Fix 5: Get initial customer services data for today**
-    $todayRange = $this->getDateRange('today', null); // Use 'today' as the default date range
+    // Get initial customer services data for today
+    $todayRange = $this->getDateRange('today', null, null, null);
     $customerServicesData = $this->getCustomerServicesData($todayRange['start'], $todayRange['end']);
 
-    // Return the view with all data, including the initial customer services data
+    // Return the view with all data
     return view('dashboard.index', array_merge(
         $stats,
         $appointmentsData,
@@ -71,7 +73,8 @@ class DashboardController extends Controller
             'popularService' => $popularService?->service?->name ?? 'N/A',
             'currentFilter' => $dateRange,
             'currentCustomDate' => $customDate,
-            // **Pass the initial customer services data for today**
+            'dateFrom' => $dateFrom,
+            'dateTo' => $dateTo,
             'customersWithServicesToday' => $customerServicesData['customers'],
             'totalServicesToday' => $customerServicesData['total_services'],
             'popularServiceToday' => $customerServicesData['popular_service'],
@@ -80,53 +83,84 @@ class DashboardController extends Controller
 }
 
 
-    private function getDateRange($range, $customDate = null)
-    {
-        $today = Carbon::today();
-        
-        switch ($range) {
-            case 'today':
-                $start = $today;
-                $end = $today->copy()->endOfDay();
-                $label = 'Today\'s';
-                break;
-                
-            case 'this_week':
-                $start = $today->copy()->startOfWeek();
-                $end = $today->copy()->endOfWeek();
-                $label = 'This Week\'s';
-                break;
-                
-            case 'this_month':
-                $start = $today->copy()->startOfMonth();
-                $end = $today->copy()->endOfMonth();
-                $label = 'This Month\'s';
-                break;
-                
-            case 'custom':
-                if ($customDate) {
-                    $start = Carbon::createFromFormat('Y-m', $customDate)->startOfMonth();
-                    $end = Carbon::createFromFormat('Y-m', $customDate)->endOfMonth();
-                    $label = $start->format('F Y');
-                } else {
-                    $start = $today;
-                    $end = $today->copy()->endOfDay();
-                    $label = 'Today\'s';
-                }
-                break;
-                
-            default:
-                $start = $today;
-                $end = $today->copy()->endOfDay();
-                $label = 'Today\'s';
-        }
 
-        return [
-            'start' => $start,
-            'end' => $end,
-            'label' => $label
-        ];
+    private function getDateRange($range, $customDate = null, $dateFrom = null, $dateTo = null)
+{
+    $today = Carbon::today();
+    
+    switch ($range) {
+        case 'today':
+            $start = $today;
+            $end = $today->copy()->endOfDay();
+            $label = 'Today\'s';
+            break;
+            
+        case 'yesterday':
+            $start = $today->copy()->subDay();
+            $end = $start->copy()->endOfDay();
+            $label = 'Yesterday\'s';
+            break;
+            
+        case 'this_week':
+            $start = $today->copy()->startOfWeek();
+            $end = $today->copy()->endOfWeek();
+            $label = 'This Week\'s';
+            break;
+            
+        case 'last_week':
+            $start = $today->copy()->subWeek()->startOfWeek();
+            $end = $today->copy()->subWeek()->endOfWeek();
+            $label = 'Last Week\'s';
+            break;
+            
+        case 'this_month':
+            $start = $today->copy()->startOfMonth();
+            $end = $today->copy()->endOfMonth();
+            $label = 'This Month\'s';
+            break;
+            
+        case 'last_month':
+            $start = $today->copy()->subMonth()->startOfMonth();
+            $end = $today->copy()->subMonth()->endOfMonth();
+            $label = 'Last Month\'s';
+            break;
+            
+        case 'custom_range':
+            if ($dateFrom && $dateTo) {
+                $start = Carbon::parse($dateFrom)->startOfDay();
+                $end = Carbon::parse($dateTo)->endOfDay();
+                $label = 'Custom Range: ' . $start->format('M j') . ' - ' . $end->format('M j, Y');
+            } else {
+                $start = $today;
+                $end = $today->copy()->endOfDay();
+                $label = 'Today\'s';
+            }
+            break;
+            
+        case 'custom':
+            if ($customDate) {
+                $start = Carbon::createFromFormat('Y-m', $customDate)->startOfMonth();
+                $end = Carbon::createFromFormat('Y-m', $customDate)->endOfMonth();
+                $label = $start->format('F Y');
+            } else {
+                $start = $today;
+                $end = $today->copy()->endOfDay();
+                $label = 'Today\'s';
+            }
+            break;
+            
+        default:
+            $start = $today;
+            $end = $today->copy()->endOfDay();
+            $label = 'Today\'s';
     }
+
+    return [
+        'start' => $start,
+        'end' => $end,
+        'label' => $label
+    ];
+}
 
     private function getDashboardStats($startDate, $endDate, $label)
 {
@@ -183,8 +217,10 @@ public function filter(Request $request)
 {
     $dateRange = $request->get('date_range', 'today');
     $customDate = $request->get('custom_date');
+    $dateFrom = $request->get('date_from');
+    $dateTo = $request->get('date_to');
     
-    $dateRangeData = $this->getDateRange($dateRange, $customDate);
+    $dateRangeData = $this->getDateRange($dateRange, $customDate, $dateFrom, $dateTo);
     $stats = $this->getDashboardStats($dateRangeData['start'], $dateRangeData['end'], $dateRangeData['label']);
     $appointmentsData = $this->getAppointmentsData($dateRangeData['start'], $dateRangeData['end']);
 

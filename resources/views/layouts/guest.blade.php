@@ -26,5 +26,9 @@
                 {{ $slot }}
             </div>
         </div>
+        <!-- Toast Notifications -->
+@toast
+<!-- Scripts -->
+@stack('scripts')
     </body>
 </html>

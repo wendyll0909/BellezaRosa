@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Models\Appointment;
+use Illuminate\Support\Facades\Blade;
 use App\Observers\AppointmentObserver;
 use Carbon\Carbon;
 
@@ -28,5 +29,14 @@ class AppServiceProvider extends ServiceProvider
         
         // Set Carbon (Laravel's date library) timezone
         Carbon::setLocale('en');
-        date_default_timezone_set('Asia/Manila');    }
+        date_default_timezone_set('Asia/Manila');
+        // Add toast directive
+    Blade::directive('toast', function ($expression) {
+        return "<?php if(session()->has('toast')): ?>
+            <x-toast :type=\"session('toast.type', 'success')\" 
+                     :message=\"session('toast.message')\" 
+                     :duration=\"session('toast.duration', 5000)\" />
+        <?php endif; ?>";
+    });
+   }
 }

@@ -536,30 +536,34 @@
                         <li><a href="#contact">Contact</a></li>
 
                     @auth
-                        @if(auth()->user()->isAdmin() || auth()->user()->isStaff())
-                            <li><a href="{{ route('dashboard.index') }}" class="btn btn-primary">Dashboard</a></li>
-                        @else
-                            <li>
-                                <div style="position: relative;">
-                                    <a href="{{ route('home') }}" style="display: flex; align-items: center;">
-                                        <i class="fas fa-bell" style="font-size: 20px;"></i>
-                                        <span class="notification-badge">1</span>
-                                    </a>
-                                </div>
-                            </li>
-                        @endif
+    @if(auth()->user()->isAdmin() || auth()->user()->isStaff())
+        <li><a href="{{ route('dashboard.index') }}" class="btn btn-primary">Dashboard</a></li>
+    @else
+        <li>
+            <div style="position: relative;">
+                <a href="{{ route('messages.index') }}" style="display: flex; align-items: center; position: relative;">
+                    <i class="fas fa-bell" style="font-size: 20px;"></i>
+                    @if(auth()->user()->total_unread_count > 0)
+                        <span class="notification-badge" id="notificationBadge">
+                            {{ auth()->user()->total_unread_count > 9 ? '9+' : auth()->user()->total_unread_count }}
+                        </span>
+                    @endif
+                </a>
+            </div>
+        </li>
+    @endif
 
-                        <li>
-                            <form method="POST" action="{{ route('logout') }}" style="display: inline;">
-                                @csrf
-                                <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer; font: inherit;">
-                                    <i class="fas fa-sign-out-alt"></i> Logout
-                                </button>
-                            </form>
-                        </li>
-                    @else
-                        <li><a href="{{ route('login') }}" class="btn btn-primary">Login</a></li>
-                    @endauth
+    <li>
+        <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+            @csrf
+            <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer; font: inherit;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </form>
+    </li>
+@else
+    <li><a href="{{ route('login') }}" class="btn btn-primary">Login</a></li>
+@endauth
                 </ul>
                 <div class="mobile-menu">
                     <i class="fas fa-bars"></i>
@@ -735,68 +739,103 @@
         <span id="toast-message"></span>
     </div>
 </div>
-   <script>
-    // Mobile Menu Toggle
-    document.querySelector('.mobile-menu').addEventListener('click', function() {
-        document.querySelector('.nav-links').classList.toggle('active');
-    });
+<script>
+// Mobile Menu Toggle
+document.querySelector('.mobile-menu').addEventListener('click', function() {
+    document.querySelector('.nav-links').classList.toggle('active');
+});
 
-    // Header Scroll Effect
-    window.addEventListener('scroll', function() {
-        const header = document.getElementById('header');
-        if (window.scrollY > 50) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
+// Header Scroll Effect
+window.addEventListener('scroll', function() {
+    const header = document.getElementById('header');
+    if (window.scrollY > 50) {
+        header.classList.add('scrolled');
+    } else {
+        header.classList.remove('scrolled');
+    }
+});
+
+// Smooth Scrolling for Anchor Links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+            window.scrollTo({
+                top: targetElement.offsetTop - 80,
+                behavior: 'smooth'
+            });
+            // Close mobile menu if open
+            document.querySelector('.nav-links').classList.remove('active');
         }
     });
+});
 
-    // Smooth Scrolling for Anchor Links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href');
-            if (targetId === '#') return;
-            const targetElement = document.querySelector(targetId);
-            if (targetElement) {
-                window.scrollTo({
-                    top: targetElement.offsetTop - 80,
-                    behavior: 'smooth'
-                });
-                // Close mobile menu if open
-                document.querySelector('.nav-links').classList.remove('active');
+// Toast Notification Function
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toast-message');
+    
+    toastMessage.textContent = message;
+    toast.classList.remove('hidden');
+    
+    setTimeout(() => {
+        toast.classList.add('hidden');
+    }, 5000); // Toast stays 5 seconds
+}
+
+// Listen for toast events
+window.addEventListener('toast', (event) => {
+    showToast(event.detail.message);
+});
+
+// Listen for Livewire flash messages
+window.addEventListener('show-toast', (event) => {
+    showToast(event.detail.message);
+});
+
+// Open Booking Modal
+function openBookingModal() {
+    window.dispatchEvent(new CustomEvent('open-booking-modal'));
+}
+
+// Update notification badge periodically
+function updateNotificationBadge() {
+    @auth
+    fetch('{{ route("messages.unreadCount") }}')
+        .then(response => response.json())
+        .then(data => {
+            const badge = document.getElementById('notificationBadge');
+            const total = data.total_unread;
+            
+            if (total > 0) {
+                if (!badge) {
+                    // Create badge if it doesn't exist
+                    const bellLink = document.querySelector('a[href="{{ route("messages.index") }}"]');
+                    if (bellLink) {
+                        const newBadge = document.createElement('span');
+                        newBadge.id = 'notificationBadge';
+                        newBadge.className = 'notification-badge';
+                        newBadge.textContent = total > 9 ? '9+' : total;
+                        bellLink.appendChild(newBadge);
+                    }
+                } else {
+                    badge.textContent = total > 9 ? '9+' : total;
+                }
+            } else if (badge) {
+                badge.remove();
             }
         });
-    });
+    @endauth
+}
 
-    // Toast Notification Function
-    function showToast(message) {
-        const toast = document.getElementById('toast');
-        const toastMessage = document.getElementById('toast-message');
-        
-        toastMessage.textContent = message;
-        toast.classList.remove('hidden');
-        
-        setTimeout(() => {
-            toast.classList.add('hidden');
-        }, 5000); // Toast stays 5 seconds
-    }
+// Update every 30 seconds
+setInterval(updateNotificationBadge, 30000);
 
-    // Listen for toast events
-    window.addEventListener('toast', (event) => {
-        showToast(event.detail.message);
-    });
-
-    // Listen for Livewire flash messages
-    window.addEventListener('show-toast', (event) => {
-        showToast(event.detail.message);
-    });
-
-    // Open Booking Modal
-    function openBookingModal() {
-        window.dispatchEvent(new CustomEvent('open-booking-modal'));
-    }
+// Initial update
+document.addEventListener('DOMContentLoaded', updateNotificationBadge);
 </script>
-
 </body>
 </html>

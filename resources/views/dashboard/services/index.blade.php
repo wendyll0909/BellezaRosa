@@ -89,6 +89,9 @@
         </div>
         <div class="p-6">
             <form action="{{ route('dashboard.services.store') }}" method="POST">
+                      data-toast="true"
+      data-toast-message="Service created successfully!"
+      data-toast-type="success">
                 @csrf
                 <div class="grid md:grid-cols-2 gap-4">
                     <div class="form-group">

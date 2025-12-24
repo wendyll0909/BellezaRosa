@@ -33,4 +33,9 @@ class Service extends Model
     {
         return $this->hasMany(Appointment::class);
     }
+    public function matchesSpecialty($specialty)
+{
+    return $this->category->specialty === $specialty || 
+           $this->category->specialty === 'both';
+}
 }

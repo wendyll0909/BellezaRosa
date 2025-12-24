@@ -34,13 +34,17 @@
         </div>
 
         <!-- Toast Notification -->
+         @toast
         <div id="toast" class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 hidden transition-all duration-300">
             <div class="flex items-center">
                 <i class="fas fa-check-circle mr-2"></i>
                 <span id="toast-message"></span>
             </div>
         </div>
-
+<!-- Livewire Scripts -->
+@livewireScripts
+<!-- Custom Scripts -->
+@stack('scripts')
         <script>
             // Toast notification function
             function showToast(message) {

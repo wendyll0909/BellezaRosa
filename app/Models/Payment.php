@@ -1,5 +1,5 @@
 <?php
-// [file name]: Payment.php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -19,11 +19,30 @@ class Payment extends Model
     ];
 
     protected $casts = [
-        'amount' => 'decimal:2',
+        'amount'          => 'decimal:2',
         'payment_details' => 'array',
-        'paid_at' => 'datetime'
+        'paid_at'         => 'datetime'
     ];
 
+    protected $appends = ['is_paid', 'is_failed', 'is_cancelled'];
+
+    // Accessors
+    public function getIsPaidAttribute(): bool
+    {
+        return $this->status === 'paid';
+    }
+    
+    public function getIsFailedAttribute(): bool
+    {
+        return $this->status === 'failed';
+    }
+    
+    public function getIsCancelledAttribute(): bool
+    {
+        return $this->status === 'cancelled';
+    }
+
+    // Relationships
     public function appointment()
     {
         return $this->belongsTo(Appointment::class);
@@ -44,16 +63,51 @@ class Payment extends Model
     {
         return $this->status === 'pending';
     }
+    
+    public function isFailed(): bool
+    {
+        return $this->status === 'failed';
+    }
+    
+    public function isCancelled(): bool
+    {
+        return $this->status === 'cancelled';
+    }
 
-    public function markAsPaid()
+    // Action methods
+    public function markAsPaid(): void
     {
         $this->update([
-            'status' => 'paid',
+            'status'  => 'paid',
             'paid_at' => now()
         ]);
     }
+    
+    public function markAsFailed(string $reason = null): void
+    {
+        $notes = $reason 
+            ? ($this->notes ? $this->notes . "\n" . $reason : $reason)
+            : $this->notes;
 
-    // Scope for filtering
+        $this->update([
+            'status' => 'failed',
+            'notes'  => $notes
+        ]);
+    }
+    
+    public function markAsCancelled(string $reason = null): void
+    {
+        $notes = $reason 
+            ? ($this->notes ? $this->notes . "\n" . $reason : $reason)
+            : $this->notes;
+
+        $this->update([
+            'status' => 'cancelled',
+            'notes'  => $notes
+        ]);
+    }
+
+    // Scopes for filtering
     public function scopePending($query)
     {
         return $query->where('status', 'pending');
@@ -62,6 +116,16 @@ class Payment extends Model
     public function scopePaid($query)
     {
         return $query->where('status', 'paid');
+    }
+    
+    public function scopeFailed($query)
+    {
+        return $query->where('status', 'failed');
+    }
+    
+    public function scopeCancelled($query)
+    {
+        return $query->where('status', 'cancelled');
     }
 
     public function scopeByMethod($query, $method)

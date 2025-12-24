@@ -11,109 +11,111 @@
             <i class="fas fa-plus mr-2"></i> New Appointment
         </button>
     </div>
-<!-- Statistics Cards -->
-<div class="flex flex-col md:flex-row gap-4 md:gap-6">
-    <!-- Total Appointments -->
-    <div class="flex-1 card border-l-4 border-blue-500 min-w-0">
-        <div class="flex items-center justify-between p-4">
-            <div class="flex items-center min-w-0">
-                <div class="p-3 bg-blue-100 rounded-xl mr-3 flex-shrink-0">
-                    <i class="fas fa-calendar-check text-blue-600 text-lg"></i>
+
+    <!-- Statistics Cards -->
+    <div class="flex flex-col md:flex-row gap-4 md:gap-6">
+        <!-- Total Appointments -->
+        <div class="flex-1 card border-l-4 border-blue-500 min-w-0">
+            <div class="flex items-center justify-between p-4">
+                <div class="flex items-center min-w-0">
+                    <div class="p-3 bg-blue-100 rounded-xl mr-3 flex-shrink-0">
+                        <i class="fas fa-calendar-check text-blue-600 text-lg"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <h3 class="text-sm font-medium text-gray-500 truncate">Total Appointments</h3>
+                    </div>
                 </div>
-                <div class="min-w-0">
-                    <h3 class="text-sm font-medium text-gray-500 truncate">Total Appointments</h3>
-                </div>
+                <p class="text-2xl font-bold text-gray-900 ml-2 flex-shrink-0">
+                    {{ $totalAppointments ?? 0 }}
+                </p>
             </div>
-            <p class="text-2xl font-bold text-gray-900 ml-2 flex-shrink-0">
-                {{ $totalAppointments ?? 0 }}
-            </p>
+        </div>
+
+        <!-- Today's Appointments -->
+        <div class="flex-1 card border-l-4 border-green-500 min-w-0">
+            <div class="flex items-center justify-between p-4">
+                <div class="flex items-center min-w-0">
+                    <div class="p-3 bg-green-100 rounded-xl mr-3 flex-shrink-0">
+                        <i class="fas fa-calendar-day text-green-600 text-lg"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <h3 class="text-sm font-medium text-gray-500 truncate">Today's Appointments</h3>
+                    </div>
+                </div>
+                <p class="text-2xl font-bold text-gray-900 ml-2 flex-shrink-0">
+                    {{ $todayAppointments ?? 0 }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Completed This Month -->
+        <div class="flex-1 card border-l-4 border-red-500 min-w-0">
+            <div class="flex items-center justify-between p-4">
+                <div class="flex items-center min-w-0">
+                    <div class="p-3 bg-red-100 rounded-xl mr-3 flex-shrink-0">
+                        <i class="fas fa-check-circle text-red-600 text-lg"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <h3 class="text-sm font-medium text-gray-500 truncate">Completed (Month)</h3>
+                    </div>
+                </div>
+                <p class="text-2xl font-bold text-gray-900 ml-2 flex-shrink-0">
+                    {{ $completedThisMonth ?? 0 }}
+                </p>
+            </div>
         </div>
     </div>
 
-    <!-- Today's Appointments -->
-    <div class="flex-1 card border-l-4 border-green-500 min-w-0">
-        <div class="flex items-center justify-between p-4">
-            <div class="flex items-center min-w-0">
-                <div class="p-3 bg-green-100 rounded-xl mr-3 flex-shrink-0">
-                    <i class="fas fa-calendar-day text-green-600 text-lg"></i>
-                </div>
-                <div class="min-w-0">
-                    <h3 class="text-sm font-medium text-gray-500 truncate">Today's Appointments</h3>
-                </div>
-            </div>
-            <p class="text-2xl font-bold text-gray-900 ml-2 flex-shrink-0">
-                {{ $todayAppointments ?? 0 }}
-            </p>
-        </div>
-    </div>
-
-    <!-- Completed This Month -->
-    <div class="flex-1 card border-l-4 border-red-500 min-w-0">
-        <div class="flex items-center justify-between p-4">
-            <div class="flex items-center min-w-0">
-                <div class="p-3 bg-red-100 rounded-xl mr-3 flex-shrink-0">
-                    <i class="fas fa-check-circle text-red-600 text-lg"></i>
-                </div>
-                <div class="min-w-0">
-                    <h3 class="text-sm font-medium text-gray-500 truncate">Completed (Month)</h3>
-                </div>
-            </div>
-            <p class="text-2xl font-bold text-gray-900 ml-2 flex-shrink-0">
-                {{ $completedThisMonth ?? 0 }}
-            </p>
-        </div>
-    </div>
-</div>
     <!-- Filters -->
-<div class="card">
-    <form action="{{ route('dashboard.appointments.index') }}" method="GET" class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div class="flex flex-col md:flex-row gap-4 flex-1">
-            <!-- Search Input -->
-            <input 
-                type="text" 
-                name="search" 
-                value="{{ request('search') }}"
-                placeholder="Search by name, phone, or service..." 
-                class="px-4 py-2 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none w-full md:w-64">
+    <div class="card">
+        <form action="{{ route('dashboard.appointments.index') }}" method="GET" class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div class="flex flex-col md:flex-row gap-4 flex-1">
+                <!-- Search Input -->
+                <input 
+                    type="text" 
+                    name="search" 
+                    value="{{ request('search') }}"
+                    placeholder="Search by name, phone, or service..." 
+                    class="px-4 py-2 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none w-full md:w-64">
+                
+                <!-- Status Filter -->
+                <select 
+                    name="status" 
+                    class="px-4 py-2 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none">
+                    <option value="">All Status</option>
+                    <option value="scheduled" {{ request('status') == 'scheduled' ? 'selected' : '' }}>Scheduled</option>
+                    <option value="confirmed" {{ request('status') == 'confirmed' ? 'selected' : '' }}>Confirmed</option>
+                    <option value="in_progress" {{ request('status') == 'in_progress' ? 'selected' : '' }}>In Progress</option>
+                    <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
+                    <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                </select>
+                
+                <!-- Date Filter -->
+                <input 
+                    type="date" 
+                    name="date" 
+                    value="{{ request('date') }}"
+                    class="px-4 py-2 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none">
+            </div>
             
-            <!-- Status Filter -->
-            <select 
-                name="status" 
-                class="px-4 py-2 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none">
-                <option value="">All Status</option>
-                <option value="scheduled" {{ request('status') == 'scheduled' ? 'selected' : '' }}>Scheduled</option>
-                <option value="confirmed" {{ request('status') == 'confirmed' ? 'selected' : '' }}>Confirmed</option>
-                <option value="in_progress" {{ request('status') == 'in_progress' ? 'selected' : '' }}>In Progress</option>
-                <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
-                <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
-            </select>
-            
-            <!-- Date Filter -->
-            <input 
-                type="date" 
-                name="date" 
-                value="{{ request('date') }}"
-                class="px-4 py-2 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-600 outline-none">
-        </div>
-        
-        <!-- Filter and Clear Buttons -->
-        <div class="flex gap-2">
-            <button 
-                type="submit" 
-                class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-xl transition">
-                <i class="fas fa-filter mr-2"></i> Apply Filters
-            </button>
-            
-            @if(request()->hasAny(['search', 'status', 'date']))
-            <a 
-                href="{{ route('dashboard.appointments.index') }}" 
-                class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-xl transition">
-                <i class="fas fa-times mr-2"></i> Clear
-            </a>
-            @endif
-        </div>
-    </form>
-</div>
+            <!-- Filter and Clear Buttons -->
+            <div class="flex gap-2">
+                <button 
+                    type="submit" 
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-xl transition">
+                    <i class="fas fa-filter mr-2"></i> Apply Filters
+                </button>
+                
+                @if(request()->hasAny(['search', 'status', 'date']))
+                <a 
+                    href="{{ route('dashboard.appointments.index') }}" 
+                    class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-xl transition">
+                    <i class="fas fa-times mr-2"></i> Clear
+                </a>
+                @endif
+            </div>
+        </form>
+    </div>
 
     <!-- Appointments Table -->
     <div class="card">
@@ -132,86 +134,96 @@
                 </thead>
                 <tbody class="divide-y divide-gray-200">
                     @forelse($appointments as $appointment)
-<tr class="hover:bg-gray-50">
-    <td class="px-4 py-3 text-sm">
-        <div class="font-medium text-gray-900">{{ $appointment->start_datetime->format('M j, Y') }}</div>
-        <div class="text-gray-500">{{ $appointment->start_datetime->format('g:i A') }}</div>
-    </td>
-    <td class="px-4 py-3">
-        <div class="font-medium text-gray-900">{{ $appointment->customer->full_name }}</div>
-        <div class="text-sm text-gray-500">{{ $appointment->customer->phone }}</div>
-    </td>
-    <td class="px-4 py-3 text-sm text-gray-900">{{ $appointment->service->name }}</td>
-    <td class="px-4 py-3 text-sm text-gray-900">{{ $appointment->staff->user->full_name ?? 'Unassigned' }}</td>
-    <td class="px-4 py-3 text-sm font-semibold text-gray-900">₱{{ number_format($appointment->total_amount, 2) }}</td>
-    <td class="px-4 py-3">
-        <span class="text-xs font-semibold
-            {{ $appointment->status == 'scheduled' ? 'text-blue-600' : '' }}
-            {{ $appointment->status == 'confirmed' ? 'text-green-600' : '' }}
-            {{ $appointment->status == 'in_progress' ? 'text-yellow-600' : '' }}
-            {{ $appointment->status == 'completed' ? 'text-gray-600' : '' }}
-            {{ $appointment->status == 'cancelled' ? 'text-red-600' : '' }}">
-            {{ str_replace('_', ' ', ucfirst($appointment->status)) }}
-        </span>
-    </td>
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-3 text-sm">
+                            <div class="font-medium text-gray-900">{{ $appointment->start_datetime->format('M j, Y') }}</div>
+                            <div class="text-gray-500">{{ $appointment->start_datetime->format('g:i A') }}</div>
+                        </td>
+                        <td class="px-4 py-3">
+                            <div class="font-medium text-gray-900">{{ $appointment->customer->full_name }}</div>
+                            <div class="text-sm text-gray-500">{{ $appointment->customer->phone }}</div>
+                        </td>
+                        <td class="px-4 py-3 text-sm text-gray-900">{{ $appointment->service->name }}</td>
+                        <td class="px-4 py-3 text-sm text-gray-900">{{ $appointment->staff->user->full_name ?? 'Unassigned' }}</td>
+                        <td class="px-4 py-3 text-sm font-semibold text-gray-900">₱{{ number_format($appointment->total_amount, 2) }}</td>
+                        <td class="px-4 py-3">
+                            <span class="text-xs font-semibold
+                                {{ $appointment->status == 'scheduled' ? 'text-blue-600' : '' }}
+                                {{ $appointment->status == 'confirmed' ? 'text-green-600' : '' }}
+                                {{ $appointment->status == 'in_progress' ? 'text-yellow-600' : '' }}
+                                {{ $appointment->status == 'completed' ? 'text-gray-600' : '' }}
+                                {{ $appointment->status == 'cancelled' ? 'text-red-600' : '' }}">
+                                {{ str_replace('_', ' ', ucfirst($appointment->status)) }}
+                            </span>
+                        </td>
 
-    <!-- Updated Actions Column -->
-    <td classacb class="px-4 py-3">
-        <div class="flex space-x-3 items-center">
+                        <!-- Actions Column -->
+                        <td class="px-4 py-3">
+                            <div class="flex space-x-3 items-center">
 
-            <!-- Status Update -->
-            <form action="{{ route('dashboard.appointments.status', $appointment) }}" method="POST" class="inline">
-                @csrf
-                <select name="status" onchange="this.form.submit()"
-                    class="text-xs font-semibold rounded-lg px-3 py-1 bg-blue-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-300">
-                    <option value="scheduled" {{ $appointment->status == 'scheduled' ? 'selected' : '' }}>Scheduled</option>
-                    <option value="confirmed" {{ $appointment->status == 'confirmed' ? 'selected' : '' }}>Confirmed</option>
-                    <option value="in_progress" {{ $appointment->status == 'in_progress' ? 'selected' : '' }}>In Progress</option>
-                    <option value="completed" {{ $appointment->status == 'completed' ? 'selected' : '' }}>Completed</option>
-                    <option value="cancelled" {{ $appointment->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
-                </select>
-            </form>
+                                <!-- Status Update -->
+                                <form action="{{ route('dashboard.appointments.status', $appointment) }}" method="POST" class="inline">
+                                    @csrf
+                                    <select name="status" onchange="this.form.submit()"
+                                        class="text-xs font-semibold rounded-lg px-3 py-1 bg-blue-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-300">
+                                        <option value="scheduled" {{ $appointment->status == 'scheduled' ? 'selected' : '' }}>Scheduled</option>
+                                        <option value="confirmed" {{ $appointment->status == 'confirmed' ? 'selected' : '' }}>Confirmed</option>
+                                        <option value="in_progress" {{ $appointment->status == 'in_progress' ? 'selected' : '' }}>In Progress</option>
+                                        <option value="completed" {{ $appointment->status == 'completed' ? 'selected' : '' }}>Completed</option>
+                                        <option value="cancelled" {{ $appointment->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                                    </select>
+                                </form>
 
-            <!-- Edit -->
-            <a href="{{ route('dashboard.appointments.edit', $appointment) }}"
-               class="text-blue-600 hover:text-blue-800 transition" title="Edit Appointment">
-                <i class="fas fa-edit"></i>
-            </a>
+                                <!-- Edit -->
+                                <a href="{{ route('dashboard.appointments.edit', $appointment) }}"
+                                   class="text-blue-600 hover:text-blue-800 transition" title="Edit Appointment">
+                                    <i class="fas fa-edit"></i>
+                                </a>
 
-            <!-- Record Payment -->
-            <a href="{{ route('dashboard.payments.create', $appointment) }}"
-               class="text-green-600 hover:text-green-800 transition"
-               title="Record Payment">
-                <i class="fas fa-money-bill-wave"></i>
-            </a>
+                                <!-- Cancel Appointment Button (only if not already cancelled) -->
+                                @if(!$appointment->isCancelled())
+                                    <a href="{{ route('dashboard.appointments.cancel.form', $appointment) }}"
+                                       class="text-red-600 hover:text-red-800 transition" 
+                                       title="Cancel Appointment"
+                                       onclick="return confirm('Are you sure you want to cancel this appointment?')">
+                                        <i class="fas fa-times-circle text-lg"></i>
+                                    </a>
+                                @endif
 
-            <!-- View Payment (if exists) -->
-            @if($appointment->payment()->exists())
-                <a href="{{ route('dashboard.payments.show', $appointment->payment) }}"
-                   class="text-indigo-600 hover:text-indigo-800 transition"
-                   title="View Payment Details">
-                    <i class="fas fa-eye"></i>
-                </a>
-            @endif
+                                <!-- Record Payment -->
+                                <a href="{{ route('dashboard.payments.create', $appointment) }}"
+                                   class="text-green-600 hover:text-green-800 transition"
+                                   title="Record Payment">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                </a>
 
-            <!-- Paid Indicator -->
-            @if($appointment->payment && $appointment->payment->is_paid)
-                <span class="text-green-600 font-bold" title="Fully Paid">
-                    <i class="fas fa-check-circle"></i>
-                </span>
-            @endif
+                                <!-- View Payment (if exists) -->
+                                @if($appointment->payment()->exists())
+                                    <a href="{{ route('dashboard.payments.show', $appointment->payment) }}"
+                                       class="text-indigo-600 hover:text-indigo-800 transition"
+                                       title="View Payment Details">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                @endif
 
-        </div>
-    </td>
-</tr>
-@empty
-<tr>
-    <td colspan="7" class="px-4 py-8 text-center text-gray-500">
-        <i class="fas fa-calendar-times text-4xl mb-3 text-gray-300"></i>
-        <p>No appointments found.</p>
-    </td>
-</tr>
-@endforelse
+                                <!-- Paid Indicator -->
+                                @if($appointment->payment && $appointment->payment->isPaid())
+                                    <span class="text-green-600 font-bold" title="Fully Paid">
+                                        <i class="fas fa-check-circle"></i>
+                                    </span>
+                                @endif
+
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="7" class="px-4 py-8 text-center text-gray-500">
+                            <i class="fas fa-calendar-times text-4xl mb-3 text-gray-300"></i>
+                            <p>No appointments found.</p>
+                        </td>
+                    </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
@@ -238,6 +250,9 @@
         </div>
         <div class="p-6">
             <form action="{{ route('dashboard.appointments.store') }}" method="POST">
+                      data-toast="true"
+      data-toast-message="Appointment created successfully!"
+      data-toast-type="success">
                 @csrf
                 <div class="grid md:grid-cols-2 gap-4">
                     <div class="form-group">

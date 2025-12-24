@@ -39,28 +39,17 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // 3. Regular Customers
-        for ($i = 1; $i <= 15; $i++) {
-            User::create([
-                'full_name' => 'Customer ' . $i,
-                'username'  => 'customer' . $i,
-                'phone'     => '09' . rand(100000000, 999999999),
-                'email'     => 'customer' . $i . '@example.com',
-                'password'  => Hash::make('password'),
-                'role'      => 'customer',
-            ]);
-        }
-
-        // 4. Run the individual seeders (UPDATED - PaymentSeeder added)
+        // 3. Run all seeders in correct order
         $this->call([
             ServiceCategorySeeder::class,
-            CustomerSeeder::class,
             ServiceSeeder::class,
+            CustomerSeeder::class,    // Creates Customer records (not Users)
             AppointmentSeeder::class,
             AppointmentAddonSeeder::class,
-            PaymentSeeder::class, // ← ADD THIS LINE
-            InventorySeeder::class,    // Add this line
-
+            PaymentSeeder::class,
+            InventorySeeder::class,
+            CommissionSeeder::class,  // NEW: Add this
+            // ReportDataSeeder::class, // REMOVE or fix factories first
         ]);
     }
 }
